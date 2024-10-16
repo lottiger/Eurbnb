@@ -5,13 +5,29 @@ type ClerkUser = {
 };
 
 type Apartments = {
-    id: string;
+    id?: string;
     titel: string;
     description: string;
     price: number;
-    image: string;
+    images: { id: string; src: string }[];
     country: string;
     city: string;
-    rating: number;
     createdAt?: Date;
 };
+
+type ApartmentInput = {
+    titel: string;
+    description: string;
+    price: number;
+    images: { id: string; src: string }[];
+    country: string;
+    city: string;
+  }
+
+interface ImagePickerProps {
+    images: { id: string; src: string }[]; // Array av bilder med id och src
+    setSelectedImages: (files: File[]) => void; // Funktion för att hantera valda bilder (flera)
+    setImageSrcs: (srcs: string[]) => void; // Funktion för att hantera bilders källor (flera srcs)
+  }
+  
+  
