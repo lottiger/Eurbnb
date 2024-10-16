@@ -1,6 +1,6 @@
 'use client';
 
-import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { ClerkProvider, SignedIn, SignedOut, SignInButton, SignOutButton, UserButton } from "@clerk/nextjs";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 
 
@@ -16,12 +16,12 @@ export function ClientProviders({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
       <ConvexProvider client={convex}>
-        <SignedOut>
+        {/* <SignedOut>
           <SignInButton />
         </SignedOut>
         <SignedIn>
-          <UserButton />
-        </SignedIn>
+        <SignOutButton />
+        </SignedIn> */}
         {children}
       </ConvexProvider>
     </ClerkProvider>
