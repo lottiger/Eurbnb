@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { Menu } from "lucide-react";
 import { useUser, SignInButton, SignOutButton } from "@clerk/nextjs"; // Importera Clerk hooks och komponenter
 
-const DropdownMenu: React.FC = () => {
+const DropdownMenu = (): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const { isSignedIn } = useUser(); // Clerk's hook to check if the user is signed in
@@ -24,7 +24,7 @@ const DropdownMenu: React.FC = () => {
         onClick={toggleDropdown}
         className="inline-flex justify-center w-full rounded-md border-none focus:outline-none"
       >
-        <Menu size={32} className="text-gray-700" />
+        <Menu size={48} strokeWidth={1} className="" />
       </button>
 
       {isOpen && (
