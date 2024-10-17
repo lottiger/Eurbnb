@@ -5,6 +5,8 @@ const schema = defineSchema({
     apartments: defineTable({
       titel: v.string(),
       description: v.string(),
+      bedrooms: v.number(),
+      beds: v.number(),
       price: v.number(),
       images: v.array(v.object({ id: v.string(), src: v.string() })),
       country: v.string(),

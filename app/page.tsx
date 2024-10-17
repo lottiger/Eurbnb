@@ -1,14 +1,18 @@
-import React from 'react'
-import Header from './(root)/_components/header'
-import ApartmentList from './(root)/_components/apartment-list'
+import React from 'react';
+import Header from './(root)/_components/header';
+import ApartmentList from './(root)/_components/apartment-list';
 
-function page() {
+function Page() {
   return (
     <div>
       <Header />
-      <ApartmentList />
+      <div className="apartment-list-container">
+        {/* Rendera ApartmentList som nu hanterar dataladdningen */}
+        <ApartmentList />
+      </div>
     </div>
-  )
+  );
 }
 
-export default page
+export default Page;
+

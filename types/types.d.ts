@@ -8,6 +8,8 @@ type Apartments = {
     id?: string;
     titel: string;
     description: string;
+    badrooms: number;
+    beds: number;
     price: number;
     images: { id: string; src: string }[];
     country: string;
@@ -18,6 +20,8 @@ type Apartments = {
 type ApartmentInput = {
     titel: string;
     description: string;
+    bedrooms: number;
+    beds: number;
     price: number;
     images: { id: string; src: string }[];
     country: string;
