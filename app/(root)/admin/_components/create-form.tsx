@@ -1,180 +1,206 @@
 'use client';
 
-import React, { useState } from 'react';
-import { ImagePicker } from './image-picker'; // Se till att ImagePicker är korrekt importerad
-import { useMutation } from 'convex/react'; // Importera useMutation-hooken
-import { api } from '@/convex/_generated/api';
+import React, { useState, FormEvent } from "react";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Id } from '@/convex/_generated/dataModel'; // Importera Id från Convex
+import { ImagePicker } from "./image-picker";
 
 type ApartmentInput = {
-  titel: string;
+  title: string;
   description: string;
   bedrooms: number;
   beds: number;
   price: number;
-  images: { id: string; src: string }[];
+  images: Id<"_storage">[]; // Ändrat till array av Id<"_storage">
   country: string;
   city: string;
+};
+
+// Props för ImagePicker-komponenten
+interface ImagePickerProps {
+  images?: string[]; // Array med bilders källor (src)
+  setSelectedImages: (files: File[]) => void; // Funktion för att hantera valda bilder
+  setImageSrcs: (srcs: string[]) => void; // Funktion för att hantera bilders källor (src)
 }
 
-const CreateForm = (): JSX.Element => {
-  // Hanterar formulärdata med useState och typad med ApartmentInput
+export default function CreateApartment(): JSX.Element {
   const [apartment, setApartment] = useState<ApartmentInput>({
-    titel: '',
+    title: '',
     description: '',
     bedrooms: 0,
     beds: 0,
     price: 0,
     country: '',
     city: '',
-    images: [], // Initiera tom array för bilder
+    images: [], // Initial tom array för bilder
   });
 
+  const generateUploadUrl = useMutation(api.functions.images.generateUploadUrl);
+  const createApartment = useMutation(api.functions.apartments.createApartment);
+
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  const [imageSrcs, setImageSrcs] = useState<string[]>([]);
+  const [imageSrc, setImageSrc] = useState<string[]>([]);
 
-  // Använd mutation för att skapa en ny lägenhet
-  const createApartmentMutation = useMutation(api.functions.apartments.createApartment); // Använd rätt mutation
-
-  // Hanterar inmatningsändringar i formuläret
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-  
-    setApartment({
-      ...apartment,
-      [name]: ['price', 'beds', 'bedrooms'].includes(name) ? Number(value) : value,
-    });
-  };
-  
-  // Hanterar inlämningen av formuläret
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const apartmentData = {
-      ...apartment,
-      images: imageSrcs.map((src, index) => ({ id: `${selectedImages[index]?.name}-${index}`, src })), // Lägg till bilderna i lägenhetsobjektet
-    };
-    console.log('Submitting apartment data:', apartmentData); // Lägg till loggning
-    // Skicka datan till Convex
+
+    let images: Id<"_storage">[] = []; // Array för Id<"_storage"> för uppladdade bilder
+
     try {
-      await createApartmentMutation(apartmentData);
-      alert('Lägenhet skapad!');
-      // Återställ formuläret efter att det skickats
+      if (selectedImages.length > 0) {
+        for (const image of selectedImages) {
+          const postUrl = await generateUploadUrl();
+          const result = await fetch(postUrl, {
+            method: 'POST',
+            headers: { "content-type": image.type },
+            body: image
+          });
+          const { storageId } = await result.json();
+          images.push(storageId); // Lägg till varje bilds storageId i arrayen
+        }
+      } else {
+        throw new Error('No images selected');
+      }
+    } catch (error) {
+      console.error('Image upload failed:', error);
+    }
+
+    try {
+      await createApartment({
+        title: apartment.title,
+        description: apartment.description,
+        bedrooms: apartment.bedrooms,
+        beds: apartment.beds,
+        price: apartment.price,
+        images: images, // Använd arrayen av Id<"_storage"> för bilder
+        country: apartment.country,
+        city: apartment.city,
+      });
+      alert('Apartment created successfully!');
+      // Återställ formuläret
       setApartment({
-        titel: '',
+        title: '',
         description: '',
         bedrooms: 0,
         beds: 0,
         price: 0,
         country: '',
         city: '',
-        images: [],
+        images: [], // Nollställ bilderna efter uppladdning
       });
       setSelectedImages([]);
-      setImageSrcs([]);
+      setImageSrc([]);
     } catch (error) {
       console.error('Error creating apartment:', error);
-      alert('Ett fel uppstod vid skapandet av lägenheten.');
     }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setApartment({
+      ...apartment,
+      [name]: ['price', 'bedrooms', 'beds'].includes(name) ? Number(value) : value,
+    });
   };
 
   return (
     <div>
-      <ImagePicker
-        images={apartment.images}
-        setSelectedImages={setSelectedImages}
-        setImageSrcs={setImageSrcs}
-      />
+      <ImagePicker images={[]} setSelectedImages={setSelectedImages} setImageSrcs={setImageSrc} />
+
       <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-10">
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Titel</label>
+        {/* Titel */}
+        <div>
+          <label htmlFor="title">Titel:</label>
           <input
-            type="text"
-            name="titel"
-            value={apartment.titel}
+            id="title"
+            name="title"
+            value={apartment.title}
             onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            required
+            className="block w-full mt-1 border border-gray-300 rounded px-3 py-2"
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Beskrivning</label>
+        {/* Beskrivning */}
+        <div className="mt-4">
+          <label htmlFor="description">Beskrivning:</label>
           <input
-            type="text"
+            id="description"
             name="description"
             value={apartment.description}
             onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            required
+            className="block w-full mt-1 border border-gray-300 rounded px-3 py-2"
           />
         </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Antal sovrum</label>
+
+        {/* Sovrum */}
+        <div className="mt-4">
+          <label htmlFor="bedrooms">Antal sovrum:</label>
           <input
-            type="number"
+            id="bedrooms"
             name="bedrooms"
+            type="number"
             value={apartment.bedrooms}
             onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            required
+            className="block w-full mt-1 border border-gray-300 rounded px-3 py-2"
           />
         </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Antal sängar</label>
+
+        {/* Sängar */}
+        <div className="mt-4">
+          <label htmlFor="beds">Antal sängar:</label>
           <input
-            type="number"
+            id="beds"
             name="beds"
+            type="number"
             value={apartment.beds}
             onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            required
+            className="block w-full mt-1 border border-gray-300 rounded px-3 py-2"
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Pris per natt (SEK)</label>
+        {/* Pris */}
+        <div className="mt-4">
+          <label htmlFor="price">Pris per natt:</label>
           <input
-            type="number"
+            id="price"
             name="price"
+            type="number"
             value={apartment.price}
             onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            required
+            className="block w-full mt-1 border border-gray-300 rounded px-3 py-2"
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Land</label>
+        {/* Land */}
+        <div className="mt-4">
+          <label htmlFor="country">Land:</label>
           <input
-            type="text"
+            id="country"
             name="country"
             value={apartment.country}
             onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            required
+            className="block w-full mt-1 border border-gray-300 rounded px-3 py-2"
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Stad</label>
+        {/* Stad */}
+        <div className="mt-4">
+          <label htmlFor="city">Stad:</label>
           <input
-            type="text"
+            id="city"
             name="city"
             value={apartment.city}
             onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            required
+            className="block w-full mt-1 border border-gray-300 rounded px-3 py-2"
           />
         </div>
 
-        <button
-          type="submit"
-          className="w-full px-4 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
+        {/* Skapa Lägenhet-knapp */}
+        <button type="submit" className="mt-6 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
           Skapa lägenhet
         </button>
       </form>
     </div>
   );
-};
-
-export default CreateForm;
+}
