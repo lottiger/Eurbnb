@@ -47,7 +47,7 @@ const DropdownMenu = (): JSX.Element => {
           </li>
           <li className="py-1">
             <button
-              onClick={() => navigateTo("/bookmarks")}
+              onClick={() => navigateTo("/bookings")}
               className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
               Mina Bokningar

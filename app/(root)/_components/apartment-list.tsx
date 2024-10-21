@@ -24,12 +24,16 @@ const ApartmentList = (): JSX.Element => {
   }
 
   return (
-    <div className="apartment-list-container">
+    <>
+  
+    <h2 className='flex justify-center text-[40px] font-[600] mb-[36px] mt-[40px]'>Erbjudanden</h2>
+    
+    <div className="apartment-list-container flex flex-wrap gap-[52px] mx-40 mb-20 ">
       {/* Iterera över lägenheterna och visa dem */}
       {apartments.map((apartment: ApartmentData) => (
-        <div key={apartment.titel} className="bg-red-200 w-[200px] h-[238px] text-[12px] p-2 rounded-lg mb-4">
+        <div key={apartment.titel} className=" w-[200px] h-[238px] text-[12px] p-2 rounded-lg mb-4">
           {/* Bilddel */}
-          <div className="h-[160px] bg-red-300 rounded-[10px] overflow-hidden">
+          <div className="h-[160px] rounded-[10px] overflow-hidden">
             {apartment.images && apartment.images.length > 0 ? (
               <img
                 src={apartment.images[0].src} // Använd src från det första objektet i images-arrayen
@@ -70,7 +74,10 @@ const ApartmentList = (): JSX.Element => {
         </div>
       ))}
     </div>
+    </>
   );
+  
 };
+
 
 export default ApartmentList;
