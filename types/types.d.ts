@@ -36,3 +36,16 @@ interface ImagePickerProps {
   setSelectedImages: (files: File[]) => void; // Hantering av valda bilder
   setImageSrcs: (srcs: string[]) => void; // Hantering av bilders källor (src)
 }
+
+// Typ för varje lägenhetsobjekt
+type ApartmentData = {
+  _id: string; // Convex ID eller annan unik identifierare
+  title: string;
+  description: string;
+  bedrooms: number;
+  beds: number;
+  price: number;
+  images: string[]; // Array av bild-URL:er
+  country: string;
+  city: string;
+};

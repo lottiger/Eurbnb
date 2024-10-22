@@ -6,16 +6,16 @@ import { api } from "@/convex/_generated/api";
 import { Id } from '@/convex/_generated/dataModel'; // Importera Id från Convex
 import { ImagePicker } from "./image-picker";
 
-type ApartmentInput = {
-  title: string;
-  description: string;
-  bedrooms: number;
-  beds: number;
-  price: number;
-  images: Id<"_storage">[]; // Ändrat till array av Id<"_storage">
-  country: string;
-  city: string;
-};
+// type ApartmentInput = {
+//   title: string;
+//   description: string;
+//   bedrooms: number;
+//   beds: number;
+//   price: number;
+//   images: Id<"_storage">[]; // Ändrat till array av Id<"_storage">
+//   country: string;
+//   city: string;
+// };
 
 // Props för ImagePicker-komponenten
 interface ImagePickerProps {
