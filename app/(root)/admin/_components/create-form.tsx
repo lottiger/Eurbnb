@@ -4,28 +4,9 @@ import React, { useState, FormEvent } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from '@/convex/_generated/dataModel'; // Importera Id från Convex
-import { ImagePicker } from "./image-picker";
-
-// type ApartmentInput = {
-//   title: string;
-//   description: string;
-//   bedrooms: number;
-//   beds: number;
-//   price: number;
-//   images: Id<"_storage">[]; // Ändrat till array av Id<"_storage">
-//   country: string;
-//   city: string;
-// };
-
-// Props för ImagePicker-komponenten
-interface ImagePickerProps {
-  images?: string[]; // Array med bilders källor (src)
-  setSelectedImages: (files: File[]) => void; // Funktion för att hantera valda bilder
-  setImageSrcs: (srcs: string[]) => void; // Funktion för att hantera bilders källor (src)
-}
 
 export default function CreateApartment(): JSX.Element {
-  const [apartment, setApartment] = useState<ApartmentInput>({
+  const [apartment, setApartment] = useState({
     title: '',
     description: '',
     bedrooms: 0,
@@ -33,19 +14,43 @@ export default function CreateApartment(): JSX.Element {
     price: 0,
     country: '',
     city: '',
-    images: [], // Initial tom array för bilder
+    images: [], // Tom array för bilder
   });
 
   const generateUploadUrl = useMutation(api.functions.images.generateUploadUrl);
   const createApartment = useMutation(api.functions.apartments.createApartment);
 
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  const [imageSrc, setImageSrc] = useState<string[]>([]);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]); // Filobjekt
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]); // Förhandsvisning av bilder
 
+  // Hantera filinmatning och generera förhandsvisningar
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files); // Konvertera FileList till en array av File-objekt
+
+      // Kombinera tidigare valda filer med de nya filerna
+      setSelectedImages((prevSelectedImages) => [...prevSelectedImages, ...filesArray]);
+
+      // Generera förhandsvisningar
+      const newPreviews: string[] = [];
+      filesArray.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          if (event.target?.result) {
+            newPreviews.push(event.target.result as string);
+            setImagePreviews((prevPreviews) => [...prevPreviews, ...newPreviews]); // Lägg till nya förhandsvisningar
+          }
+        };
+        reader.readAsDataURL(file); // Läsa in varje bild och skapa en base64-url för förhandsvisning
+      });
+    }
+  };
+
+  // Hantera form-inlämning
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    let images: Id<"_storage">[] = []; // Array för Id<"_storage"> för uppladdade bilder
+    let images: Id<"_storage">[] = []; // Array för lagrade bild-ID:n
 
     try {
       if (selectedImages.length > 0) {
@@ -54,7 +59,7 @@ export default function CreateApartment(): JSX.Element {
           const result = await fetch(postUrl, {
             method: 'POST',
             headers: { "content-type": image.type },
-            body: image
+            body: image,
           });
           const { storageId } = await result.json();
           images.push(storageId); // Lägg till varje bilds storageId i arrayen
@@ -67,17 +72,18 @@ export default function CreateApartment(): JSX.Element {
     }
 
     try {
+      // Skicka uppdaterad lägenhetsdata till API:et
       await createApartment({
         title: apartment.title,
         description: apartment.description,
         bedrooms: apartment.bedrooms,
         beds: apartment.beds,
         price: apartment.price,
-        images: images, // Använd arrayen av Id<"_storage"> för bilder
+        images: images, // Skicka arrayen av bild-ID:n till API:et
         country: apartment.country,
         city: apartment.city,
       });
-      alert('Apartment created successfully!');
+      alert('Lägenhet skapad framgångsrikt!');
       // Återställ formuläret
       setApartment({
         title: '',
@@ -87,10 +93,10 @@ export default function CreateApartment(): JSX.Element {
         price: 0,
         country: '',
         city: '',
-        images: [], // Nollställ bilderna efter uppladdning
+        images: [], // Återställ bilder
       });
-      setSelectedImages([]);
-      setImageSrc([]);
+      setSelectedImages([]); // Nollställ valda bilder
+      setImagePreviews([]); // Nollställ förhandsvisningar
     } catch (error) {
       console.error('Error creating apartment:', error);
     }
@@ -106,8 +112,6 @@ export default function CreateApartment(): JSX.Element {
 
   return (
     <div>
-      <ImagePicker images={[]} setSelectedImages={setSelectedImages} setImageSrcs={setImageSrc} />
-
       <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-10">
         {/* Titel */}
         <div>
@@ -194,6 +198,30 @@ export default function CreateApartment(): JSX.Element {
             onChange={handleChange}
             className="block w-full mt-1 border border-gray-300 rounded px-3 py-2"
           />
+        </div>
+
+        {/* Lägg till bilder */}
+        <div className="mt-4">
+          <label htmlFor="images">Lägg till bilder:</label>
+          <input
+            id="images"
+            type="file"
+            multiple
+            onChange={handleImageChange} // Hantera bildinmatning och förhandsvisning
+            className="block w-full mt-1 border border-gray-300 rounded px-3 py-2"
+          />
+        </div>
+
+        {/* Förhandsgranskning av bilder */}
+        <div className="mt-4 grid grid-cols-3 gap-4">
+          {imagePreviews.map((preview, index) => (
+            <img
+              key={index}
+              src={preview}
+              alt={`Selected preview ${index}`}
+              className="w-full h-auto border rounded"
+            />
+          ))}
         </div>
 
         {/* Skapa Lägenhet-knapp */}

@@ -1,53 +1,50 @@
 import React, { ChangeEvent, useState } from 'react';
-import { ImageUp } from "lucide-react";
-import Image from "next/image";
+import { ImageUp } from 'lucide-react';
+import Image from 'next/image';
 
 interface ImagePickerProps {
-  images: { id: string; src: string }[]; // Bilder ska ha både id och src
-  setSelectedImages: (files: File[]) => void; // Hantering av valda bilder
+  images?: string[]; // En array av bildkällor (src)
+  setSelectedImages: (files: File[]) => void; // Hantering av valda bilder (filer)
   setImageSrcs: (srcs: string[]) => void; // Hantering av bildens src-strängar
 }
 
-export const ImagePicker = ({ images, setSelectedImages, setImageSrcs }: ImagePickerProps): JSX.Element => {
-  const [previewImages, setPreviewImages] = useState<{ id: string; src: string }[]>(images);
+export const ImagePicker = ({ images = [], setSelectedImages, setImageSrcs }: ImagePickerProps): JSX.Element => {
+  const [previewImages, setPreviewImages] = useState<string[]>(images);
 
   const setImages = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
       return;
     }
 
-    const filesArray = Array.from(e.target.files);
-    const newPreviewImages: { id: string; src: string }[] = [];
-    const newSelectedImages: File[] = [];
+    const filesArray = Array.from(e.target.files); // Omvandla FileList till en array av File-objekt
+    const newSelectedImages: File[] = []; // För nya valda bilder
+    const newImageSrcs: string[] = []; // För de nya src-strängarna (förhandsgranskning)
     const fileReaders: Promise<void>[] = [];
 
+    // Läs varje fil och skapa förhandsgranskningsbilder
     filesArray.forEach((file, index) => {
       const reader = new FileReader();
       const readerPromise = new Promise<void>((resolve) => {
         reader.onload = (x) => {
           if (x.target && x.target.result) {
-            // Skapa ett nytt objekt med både id och src för förhandsvisning
-            newPreviewImages.push({ id: `${file.name}-${index}`, src: x.target.result as string });
+            newImageSrcs.push(x.target.result as string); // Lägg till bildens src
           }
           resolve();
         };
       });
       reader.readAsDataURL(file); // Läs filen som en Data URL (base64)
       fileReaders.push(readerPromise);
-      newSelectedImages.push(file); // Lägg till den nya filen i listan
+      newSelectedImages.push(file); // Lägg till filen i listan över valda filer
     });
 
     Promise.all(fileReaders).then(() => {
-      // Uppdatera preview-bilder och den nya listan
-      const updatedPreviewImages = [...previewImages, ...newPreviewImages];
-      setPreviewImages(updatedPreviewImages);
+      // Kombinera gamla och nya förhandsgranskningsbilder
+      const updatedImageSrcs = [...previewImages, ...newImageSrcs];
+      setPreviewImages(updatedImageSrcs); // Uppdatera lokalt state för förhandsgranskning
 
-      // Uppdatera src-listan för bilder
-      const updatedImageSrcs = [...newPreviewImages.map((image) => image.src)];
-      setImageSrcs(updatedImageSrcs);
-
-      // Uppdatera valda filer
-      setSelectedImages([...newSelectedImages]);
+      // Skicka kombinerad lista till props-funktioner
+      setImageSrcs([...images, ...newImageSrcs]); // Uppdatera src-strängarna
+      setSelectedImages([...newSelectedImages]); // Uppdatera valda filer
     });
   };
 
@@ -55,11 +52,11 @@ export const ImagePicker = ({ images, setSelectedImages, setImageSrcs }: ImagePi
     <>
       {previewImages.length > 0 ? (
         <div className="grid grid-cols-2 gap-4">
-          {previewImages.map((image) => (
-            <div key={image.id} className="border rounded aspect-square max-w-[200px] mx-auto overflow-hidden">
+          {previewImages.map((src, index) => (
+            <div key={index} className="border rounded aspect-square max-w-[200px] mx-auto overflow-hidden">
               <Image
-                alt={`image ${image.id}`}
-                src={image.src} // Se till att vi använder src
+                alt={`image ${index}`}
+                src={src} // Visa förhandsgranskningen med src
                 width={200}
                 height={200}
                 className="object-cover w-full h-full"
