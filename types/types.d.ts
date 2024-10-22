@@ -30,13 +30,6 @@ type ApartmentInput = {
 };
 
 
-// Props för ImagePicker-komponenten
-interface ImagePickerProps {
-  images?: string[]; // Uppdaterat till en array av bildkällor (src)
-  setSelectedImages: (files: File[]) => void; // Hantering av valda bilder
-  setImageSrcs: (srcs: string[]) => void; // Hantering av bilders källor (src)
-}
-
 // Typ för varje lägenhetsobjekt
 type ApartmentData = {
   _id: string; // Convex ID eller annan unik identifierare
@@ -49,3 +42,7 @@ type ApartmentData = {
   country: string;
   city: string;
 };
+
+interface CarouselProps {
+  images: string[]; // En array av bild-URL:er
+}

@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
 
-interface CarouselProps {
-  images: string[]; // En array av bild-URL:er
-}
-
 const ImageCarousel: React.FC<CarouselProps> = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0); // Spåra vilken bild som visas
 
@@ -20,7 +16,7 @@ const ImageCarousel: React.FC<CarouselProps> = ({ images }) => {
   };
 
   return (
-    <div className="relative w-[300px] h-[200px]">
+    <div className="relative w-[200px] h-[165px]">
       <img
         src={images[currentIndex]}
         alt={`Bild ${currentIndex + 1}`}
@@ -30,21 +26,24 @@ const ImageCarousel: React.FC<CarouselProps> = ({ images }) => {
       {/* Knapp för att gå till föregående bild */}
       <button
         onClick={prevImage}
-        className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
+        className="absolute top-1/2 left-0 transform -translate-y-1/2 text-black p-2"
       >
-        &#8592;
+        {/* &#8592; */}
       </button>
 
       {/* Knapp för att gå till nästa bild */}
       <button
         onClick={nextImage}
-        className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
+        className="absolute top-1/2 right-0 transform -translate-y-1/2 text-black p-2 "
       >
-        &#8594;
+        <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M4.16663 10.0001H15.8333M15.8333 10.0001L9.99996 4.16675M15.8333 10.0001L9.99996 15.8334" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
       </button>
 
       {/* Indikatorer för vilken bild som visas */}
-      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2">
+      {/* <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2">
         {images.map((_, index) => (
           <div
             key={index}
@@ -53,7 +52,7 @@ const ImageCarousel: React.FC<CarouselProps> = ({ images }) => {
             }`}
           />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };

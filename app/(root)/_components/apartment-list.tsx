@@ -31,10 +31,10 @@ const ApartmentList = (): JSX.Element => {
     <>
       <h2 className="flex justify-center text-[40px] font-[600] mb-[36px] mt-[40px]">Erbjudanden</h2>
 
-      <div className="apartment-list-container flex flex-wrap gap-[52px] mx-40 mb-20">
+      <div className="apartment-list-container flex flex-wrap gap-[52px] mx-40 mb-20 justify-center">
         {/* Iterera över lägenheterna och visa dem */}
         {apartments.map((apartment) => (
-          <div key={apartment._id} className="w-[300px] text-[12px] p-2 rounded-lg mb-4">
+          <div key={apartment._id} className="w-[200px] text-[12px] p-2 rounded-lg mb-4">
             {/* Karusellkomponent */}
             <ImageCarousel images={apartment.images} />
 
