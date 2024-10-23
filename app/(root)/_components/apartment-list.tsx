@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from 'convex/react'; // Importera useQuery från Convex
 import { api } from '@/convex/_generated/api'; // Importera det genererade API:t
 import ImageCarousel from './image-carousel'; // Behåll din egna ImageCarousel
@@ -11,6 +11,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"; // Importera Carousel från shadcn
+
+import ApartmentImage from './apartment-image'; // Importera ApartmentImage
 
 // Typ för varje lägenhetsobjekt
 type ApartmentData = {
@@ -29,6 +31,16 @@ const ApartmentList = (): JSX.Element => {
   // Hämta lägenhetsdata via Convex-query
   const apartments = useQuery(api.functions.apartments.getApartmentsWithImages) as ApartmentData[] | null;
 
+  const [favoritedApartments, setFavoritedApartments] = useState<string[]>([]); // Spara favoriter med sina id:n
+
+  const toggleFavorite = (apartmentId: string) => {
+    setFavoritedApartments((prev) =>
+      prev.includes(apartmentId)
+        ? prev.filter((id) => id !== apartmentId) // Ta bort om redan favoritmarkerad
+        : [...prev, apartmentId] // Lägg till om inte redan favoritmarkerad
+    );
+  };
+
   // Om datan inte har laddats ännu, visa en laddningsindikator
   if (!apartments) {
     return <div>Laddar lägenheter...</div>;
@@ -43,11 +55,18 @@ const ApartmentList = (): JSX.Element => {
         <Carousel className=" max-w-[848px]">
           <CarouselContent>
             {apartments.map((apartment) => (
-              <CarouselItem key={apartment._id} className="p-2 md:basis-1/2 lg:basis-1/3 flex justify-center">
+              <CarouselItem
+                key={apartment._id}
+                className="p-2 md:basis-1/2 lg:basis-1/3 flex justify-center"
+              >
                 <div className="w-[200px] text-[12px]">
-                  {/* Använd din befintliga ImageCarousel */}
-                  <ImageCarousel images={apartment.images} />
-                  
+                  {/* Använd ApartmentImage för bild och favorit */}
+                  <ApartmentImage
+                    images={apartment.images} // Passera korrekt bilder till ApartmentImage
+                    isFavorited={favoritedApartments.includes(apartment._id)}
+                    onToggleFavorite={() => toggleFavorite(apartment._id)}
+                  />
+
                   {/* Titel och rating */}
                   <div className="flex justify-between font-semibold mt-2">
                     <h3 className="">{apartment.title}</h3>
@@ -71,7 +90,13 @@ const ApartmentList = (): JSX.Element => {
                   {/* Sovrum och sängar */}
                   <div className="flex items-center gap-2 text-gray-600">
                     <p>{apartment.bedrooms} sovrum</p>
-                    <svg width="6" height="5" viewBox="0 0 6 5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg
+                      width="6"
+                      height="5"
+                      viewBox="0 0 6 5"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
                       <circle cx="2.5271" cy="2.5" r="2.5" fill="black" fillOpacity="0.8" />
                     </svg>
                     <p>{apartment.beds} sängar</p>
@@ -98,7 +123,11 @@ const ApartmentList = (): JSX.Element => {
           <div key={apartment._id} className="p-2 rounded-lg mb-4">
             <div className="w-[200px] text-[12px]">
               {/* Bildkarusell för varje lägenhet */}
-              <ImageCarousel images={apartment.images} />
+              <ApartmentImage
+                    images={apartment.images} // Passera korrekt bilder till ApartmentImage
+                    isFavorited={favoritedApartments.includes(apartment._id)}
+                    onToggleFavorite={() => toggleFavorite(apartment._id)}
+                  />
 
               {/* Titel och rating */}
               <div className="flex justify-between font-semibold mt-2">
@@ -123,7 +152,13 @@ const ApartmentList = (): JSX.Element => {
               {/* Sovrum och sängar */}
               <div className="flex items-center gap-2 text-gray-600">
                 <p>{apartment.bedrooms} sovrum</p>
-                <svg width="6" height="5" viewBox="0 0 6 5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  width="6"
+                  height="5"
+                  viewBox="0 0 6 5"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <circle cx="2.5271" cy="2.5" r="2.5" fill="black" fillOpacity="0.8" />
                 </svg>
                 <p>{apartment.beds} sängar</p>

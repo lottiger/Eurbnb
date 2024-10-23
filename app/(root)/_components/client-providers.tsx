@@ -1,7 +1,8 @@
 'use client';
 
-import { ClerkProvider, SignedIn, SignedOut, SignInButton, SignOutButton, UserButton } from "@clerk/nextjs";
-import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { ConvexProviderWithClerk } from "convex/react-clerk";
+import { ClerkProvider, useAuth } from "@clerk/nextjs";
+import {  ConvexReactClient } from "convex/react";
 
 
 // Kontrollera Convex URL
@@ -15,7 +16,7 @@ const convex = new ConvexReactClient(convexUrl);
 export function ClientProviders({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
-      <ConvexProvider client={convex}>
+      <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
         {/* <SignedOut>
           <SignInButton />
         </SignedOut>
@@ -23,7 +24,7 @@ export function ClientProviders({ children }: { children: React.ReactNode }) {
         <SignOutButton />
         </SignedIn> */}
         {children}
-      </ConvexProvider>
+      </ConvexProviderWithClerk>
     </ClerkProvider>
   );
 }

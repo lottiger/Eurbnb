@@ -6,13 +6,13 @@ type ClerkUser = {
 
 // Typ för lägenheter som sparas i databasen
 type Apartments = {
-  id?: string;
+  _id?: string;
   titel: string;
   description: string;
   bedrooms: number;
   beds: number;
   price: number;
-  images: string;
+  images: Id<"_storage">[];
   country: string;
   city: string;
   createdAt?: Date;

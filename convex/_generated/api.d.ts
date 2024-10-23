@@ -16,6 +16,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as functions_apartments from "../functions/apartments.js";
+import type * as functions_favorites from "../functions/favorites.js";
 import type * as functions_images from "../functions/images.js";
 
 /**
@@ -28,6 +29,7 @@ import type * as functions_images from "../functions/images.js";
  */
 declare const fullApi: ApiFromModules<{
   "functions/apartments": typeof functions_apartments;
+  "functions/favorites": typeof functions_favorites;
   "functions/images": typeof functions_images;
 }>;
 export declare const api: FilterApi<
