@@ -32,7 +32,7 @@ type ApartmentInput = {
 
 // Typ för varje lägenhetsobjekt
 type ApartmentData = {
-  _id: string; // Convex ID eller annan unik identifierare
+  _id: Id<"apartments">;
   title: string;
   description: string;
   bedrooms: number;
@@ -45,4 +45,11 @@ type ApartmentData = {
 
 interface CarouselProps {
   images: string[]; // En array av bild-URL:er
+}
+
+interface ApartmentImageProps {
+  images: string[];
+  apartmentId: Id<"apartments">;
+  isFavorited: boolean;
+  onToggleFavorite: () => void;
 }

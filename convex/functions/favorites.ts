@@ -4,24 +4,26 @@ import { Id } from '../_generated/dataModel'; // Importera Id-typen
 export const toggleFavorite = mutation(async ({ db, auth }, { apartmentId }: { apartmentId: Id<"apartments"> }) => {
   const identity = await auth.getUserIdentity(); // Få användarens identitet via Clerk
 
-  if (!identity || !identity.id) {
-    throw new Error('User not authenticated');
+  // Använd `identity.subject` som är korrekt användar-ID
+  const userId = identity?.subject;
+
+  if (!userId || typeof userId !== 'string') {
+    console.error("User not authenticated or user ID is invalid");
+    throw new Error('User not authenticated or user ID is invalid');
   }
 
-  const userId = identity.id as string; // Förvandla användar-ID till en string
-
-  // Kontrollera om denna lägenhet redan är favoritmarkerad av användaren
+  // Kontrollera om användaren redan har favoritmarkerat den här lägenheten
   const existingFavorite = await db
     .query('favorites')
-    .filter(q => q.eq(q.field('userId'), userId))
-    .filter(q => q.eq(q.field('apartmentId'), apartmentId))
+    .filter(q => q.eq(q.field('userId'), userId)) // Filtrera efter användarens ID
+    .filter(q => q.eq(q.field('apartmentId'), apartmentId)) // Filtrera efter lägenhets-ID
     .first();
 
   if (existingFavorite) {
-    // Om den redan är favorit, ta bort den
+    // Om favorit redan existerar, ta bort den
     await db.delete(existingFavorite._id);
   } else {
-    // Annars, lägg till den som favorit
+    // Om inte, lägg till den som favorit
     await db.insert('favorites', {
       userId,
       apartmentId,

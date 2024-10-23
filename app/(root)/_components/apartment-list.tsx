@@ -1,22 +1,20 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useQuery } from 'convex/react'; // Importera useQuery från Convex
-import { api } from '@/convex/_generated/api'; // Importera det genererade API:t
-import ImageCarousel from './image-carousel'; // Behåll din egna ImageCarousel
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel"; // Importera Carousel från shadcn
+} from "@/components/ui/carousel";
+import ApartmentImage from './apartment-image';
+import { Id } from '@/convex/_generated/dataModel'; // Importera Id-typen
 
-import ApartmentImage from './apartment-image'; // Importera ApartmentImage
-
-// Typ för varje lägenhetsobjekt
 type ApartmentData = {
-  _id: string;
+  _id: Id<"apartments">; // Convex-ID istället för string
   title: string;
   description: string;
   bedrooms: number;
@@ -30,10 +28,9 @@ type ApartmentData = {
 const ApartmentList = (): JSX.Element => {
   // Hämta lägenhetsdata via Convex-query
   const apartments = useQuery(api.functions.apartments.getApartmentsWithImages) as ApartmentData[] | null;
+  const [favoritedApartments, setFavoritedApartments] = useState<Id<"apartments">[]>([]); // Hantera Convex-ID för favoriter
 
-  const [favoritedApartments, setFavoritedApartments] = useState<string[]>([]); // Spara favoriter med sina id:n
-
-  const toggleFavorite = (apartmentId: string) => {
+  const toggleFavorite = (apartmentId: Id<"apartments">) => {
     setFavoritedApartments((prev) =>
       prev.includes(apartmentId)
         ? prev.filter((id) => id !== apartmentId) // Ta bort om redan favoritmarkerad
@@ -41,7 +38,6 @@ const ApartmentList = (): JSX.Element => {
     );
   };
 
-  // Om datan inte har laddats ännu, visa en laddningsindikator
   if (!apartments) {
     return <div>Laddar lägenheter...</div>;
   }
@@ -52,16 +48,17 @@ const ApartmentList = (): JSX.Element => {
 
       {/* Carousel från shadcn */}
       <div className="mx-40 mb-20 flex justify-center">
-        <Carousel className=" max-w-[848px]">
+        <Carousel className="max-w-[848px]">
           <CarouselContent>
             {apartments.map((apartment) => (
               <CarouselItem
-                key={apartment._id}
+                key={apartment._id.toString()} // Använd toString för att hantera Convex-ID
                 className="p-2 md:basis-1/2 lg:basis-1/3 flex justify-center"
               >
                 <div className="w-[200px] text-[12px]">
                   {/* Använd ApartmentImage för bild och favorit */}
                   <ApartmentImage
+                    apartmentId={apartment._id} // Skicka Convex-ID direkt
                     images={apartment.images} // Passera korrekt bilder till ApartmentImage
                     isFavorited={favoritedApartments.includes(apartment._id)}
                     onToggleFavorite={() => toggleFavorite(apartment._id)}
@@ -120,14 +117,15 @@ const ApartmentList = (): JSX.Element => {
       <h3 className="flex justify-center text-[40px] font-[600] mb-[36px] mt-[40px]">Populära destinationer</h3>
       <div className="flex flex-wrap gap-[86px] justify-center mx-36">
         {apartments.map((apartment) => (
-          <div key={apartment._id} className="p-2 rounded-lg mb-4">
+          <div key={apartment._id.toString()} className="p-2 rounded-lg mb-4">
             <div className="w-[200px] text-[12px]">
               {/* Bildkarusell för varje lägenhet */}
               <ApartmentImage
-                    images={apartment.images} // Passera korrekt bilder till ApartmentImage
-                    isFavorited={favoritedApartments.includes(apartment._id)}
-                    onToggleFavorite={() => toggleFavorite(apartment._id)}
-                  />
+                apartmentId={apartment._id} // Skicka Convex-ID direkt
+                images={apartment.images} // Passera korrekt bilder till ApartmentImage
+                isFavorited={favoritedApartments.includes(apartment._id)}
+                onToggleFavorite={() => toggleFavorite(apartment._id)}
+              />
 
               {/* Titel och rating */}
               <div className="flex justify-between font-semibold mt-2">
