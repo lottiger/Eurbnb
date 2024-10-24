@@ -14,6 +14,7 @@ export default function CreateApartment(): JSX.Element {
     price: 0,
     country: '',
     city: '',
+    category: '', // Nytt fält för kategori
     images: [], // Tom array för bilder
   });
 
@@ -71,6 +72,11 @@ export default function CreateApartment(): JSX.Element {
       console.error('Image upload failed:', error);
     }
 
+    // Validera att kategorin är korrekt
+    const validCategory = apartment.category === 'offer' || apartment.category === 'popular'
+      ? apartment.category
+      : undefined;
+
     try {
       // Skicka uppdaterad lägenhetsdata till API:et
       await createApartment({
@@ -82,6 +88,7 @@ export default function CreateApartment(): JSX.Element {
         images: images, // Skicka arrayen av bild-ID:n till API:et
         country: apartment.country,
         city: apartment.city,
+        category: validCategory, // Skicka validerad kategori eller undefined
       });
       alert('Lägenhet skapad framgångsrikt!');
       // Återställ formuläret
@@ -93,6 +100,7 @@ export default function CreateApartment(): JSX.Element {
         price: 0,
         country: '',
         city: '',
+        category: '',
         images: [], // Återställ bilder
       });
       setSelectedImages([]); // Nollställ valda bilder
@@ -102,7 +110,7 @@ export default function CreateApartment(): JSX.Element {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setApartment({
       ...apartment,
@@ -198,6 +206,22 @@ export default function CreateApartment(): JSX.Element {
             onChange={handleChange}
             className="block w-full mt-1 border border-gray-300 rounded px-3 py-2"
           />
+        </div>
+
+        {/* Kategori (erbjudanden eller populära destinationer) */}
+        <div className="mt-4">
+          <label htmlFor="category">Kategori:</label>
+          <select
+            id="category"
+            name="category"
+            value={apartment.category}
+            onChange={handleChange}
+            className="block w-full mt-1 border border-gray-300 rounded px-3 py-2"
+          >
+            <option value="">Välj kategori</option>
+            <option value="offer">Erbjudanden</option>
+            <option value="popular">Populära destinationer</option>
+          </select>
         </div>
 
         {/* Lägg till bilder */}

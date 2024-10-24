@@ -32,9 +32,6 @@ export const toggleFavorite = mutation(async ({ db, auth }, { apartmentId }: { a
 });
 
 
-
-
-
 export const getUserFavorites = query(async ({ db, auth, storage }) => {
   const identity = await auth.getUserIdentity(); // Hämta användarens identitet
 

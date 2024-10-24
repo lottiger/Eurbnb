@@ -12,6 +12,7 @@ const schema = defineSchema({
     images: v.array(v.id('_storage')),
     country: v.string(),
     city: v.string(),
+    category: v.optional(v.union(v.literal('offer'), v.literal('popular'))), // Valbart fält
   }),
   
   favorites: defineTable({

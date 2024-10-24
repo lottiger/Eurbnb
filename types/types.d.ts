@@ -1,3 +1,6 @@
+import { Id } from '@/convex/_generated/dataModel'; // För att hämta Id-typen
+
+// Typ för Clerk-användare
 type ClerkUser = {
   id: string;
   email?: string;
@@ -6,50 +9,49 @@ type ClerkUser = {
 
 // Typ för lägenheter som sparas i databasen
 type Apartments = {
-  _id?: string;
-  titel: string;
+  _id?: Id<"apartments">; // Convex-ID
+  title: string;
   description: string;
   bedrooms: number;
   beds: number;
   price: number;
-  images: Id<"_storage">[];
+  images: Id<"_storage">[]; // Lagrar bilder som referenser till _storage
   country: string;
   city: string;
+  category?: 'offer' | 'popular' | null; // Kategorifält som kan vara valbart
   createdAt?: Date;
 };
 
+// Typ för input när du skapar eller uppdaterar en lägenhet
 type ApartmentInput = {
   title: string;
   description: string;
   bedrooms: number;
   beds: number;
   price: number;
-  images: Id<"_storage">[]; // Ändrat från 'string' till 'Id<"_storage">[]' för att hantera flera bilder
+  images: Id<"_storage">[]; // Array av bild-URL:er från _storage
   country: string;
   city: string;
+  category?: 'offer' | 'popular' | null; // Valbar kategori för erbjudanden eller populära destinationer
 };
 
-
-// Typ för varje lägenhetsobjekt
+// Typ för varje lägenhetsobjekt efter att ha hämtat dem från databasen
 type ApartmentData = {
-  _id: Id<"apartments">;
+  _id: Id<"apartments">; // Convex-ID för varje lägenhet
   title: string;
   description: string;
   bedrooms: number;
   beds: number;
   price: number;
-  images: string[]; // Array av bild-URL:er
+  images: string[]; // Array av bild-URL:er efter att ha hämtat från _storage
   country: string;
   city: string;
+  category?: 'offer' | 'popular' | null; // Fält för att hantera kategorin
+  createdAt?: Date;
 };
 
-interface CarouselProps {
-  images: string[]; // En array av bild-URL:er
-}
-
-interface ApartmentImageProps {
-  images: string[];
-  apartmentId: Id<"apartments">;
-  isFavorited: boolean;
-  onToggleFavorite: () => void;
-}
+// Typ för favoritdata, t.ex. användarens favoritlägenheter
+type FavoriteData = {
+  userId: string; // Användarens ID (från Clerk)
+  apartmentId: Id<"apartments">; // Favoritlägenhetens ID
+};

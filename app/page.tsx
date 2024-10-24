@@ -1,6 +1,8 @@
 import React from 'react';
 import Header from './(root)/_components/header';
-import ApartmentList from './(root)/_components/apartment-list';
+import Offers from './(root)/_components/offers';
+import PopularDestinations from './(root)/_components/popular-destinations';
+
 
 function Page() {
   return (
@@ -8,7 +10,9 @@ function Page() {
       <Header />
       <div className="apartment-list-container">
         {/* Rendera ApartmentList som nu hanterar dataladdningen */}
-        <ApartmentList />
+        <Offers />
+        <PopularDestinations />
+        
       </div>
     </div>
   );
