@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { ApartmentData } from '@/types/types';
-
 import { Id } from '@/convex/_generated/dataModel';
 import ApartmentCard from './apartment-card';
 
@@ -14,6 +13,7 @@ const AllApartments: React.FC<AllApartmentsProps> = ({ searchTerm }) => {
   const apartments = useQuery(api.functions.apartments.getApartmentsWithImages) as ApartmentData[] | null;
   const [filteredApartments, setFilteredApartments] = useState<ApartmentData[]>([]);
   const [favoritedApartments, setFavoritedApartments] = useState<Id<"apartments">[]>([]);
+  const [matchingCities, setMatchingCities] = useState<string[]>([]);
 
   useEffect(() => {
     if (apartments) {
@@ -22,6 +22,10 @@ const AllApartments: React.FC<AllApartmentsProps> = ({ searchTerm }) => {
         apartment.city.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredApartments(filtered);
+
+      // Skapa en lista av unika städer för den aktuella sökningen
+      const cities = Array.from(new Set(filtered.map(apartment => apartment.city)));
+      setMatchingCities(cities);
     }
   }, [searchTerm, apartments]);
 
@@ -33,11 +37,19 @@ const AllApartments: React.FC<AllApartmentsProps> = ({ searchTerm }) => {
     );
   };
 
-  if (!filteredApartments.length) return <div>Laddar lägenheter...</div>;
+  if (!filteredApartments.length) return <div>Inga lägenheter hittades...</div>;
 
   return (
-    <div>
-      <h3 className="flex justify-center text-[40px] font-[600] mb-[36px] mt-[40px]">Alla Lägenheter</h3>
+    <div className=''>
+      <div className='mt-20 mx-36'>
+      <p className=" mb-10 font-semibold text-[16px]">
+        {filteredApartments.length} {filteredApartments.length === 1 ? 'boende' : 'boenden'} 
+        {matchingCities.length > 0 && (
+          <> i {matchingCities.join(', ')}</>
+        )}
+      </p>
+      </div>
+      
       <div className="flex flex-wrap gap-[86px] justify-center mx-36">
         {filteredApartments.map(apartment => (
           <ApartmentCard

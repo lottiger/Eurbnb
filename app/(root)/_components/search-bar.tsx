@@ -12,10 +12,9 @@ interface SearchBarProps {
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
-  const [destination, setDestination] = useState(''); // Vald destination
-  const [dates, setDates] = useState<string>(''); // Valda datum
-  const [guests, setGuests] = useState(0); // Totalt antal gäster
-  const [filteredApartments, setFilteredApartments] = useState<ApartmentData[]>([]); // Filtrerade lägenheter
+  const [destination, setDestination] = useState(''); 
+  const [dates, setDates] = useState<string>(''); 
+  const [guests, setGuests] = useState(0); 
   const [isGuestSelectorVisible, setIsGuestSelectorVisible] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
 
@@ -41,7 +40,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     };
   }, []);
 
-  // Uppdaterar sökparametrar och skickar till onSearch
   const handleSearch = () => {
     onSearch(destination, dates, guests);
   };
@@ -59,28 +57,16 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     setIsDatePickerVisible(false);
   };
 
-  const handleDestinationChange = (term: string) => {
-    setDestination(term);
-    if (allApartments) {
-      const filtered = allApartments.filter(apartment =>
-        apartment.country.toLowerCase().includes(term.toLowerCase()) ||
-        apartment.city.toLowerCase().includes(term.toLowerCase())
-      );
-      setFilteredApartments(filtered); // Uppdaterar de filtrerade lägenheterna
-    }
-  };
-
   return (
     <div className='shadow-md rounded-[50px] flex py-[11px] px-[34px] text-[14px] items-center'>
       <div className='border-r border-[#E4E4E7] px-[25px] relative'>
         <h2>Vart</h2>
-        <input
-          type="text"
-          placeholder="Sök destination"
-          value={destination}
-          onChange={(e) => handleDestinationChange(e.target.value)}
-          className="text-gray-500 pt-[10px] bg-transparent focus:outline-none"
-        />
+        {allApartments && (
+          <DestinationSearch
+            apartments={allApartments}
+            onSelect={(selectedDestination) => setDestination(selectedDestination)}
+          />
+        )}
       </div>
       <div className='border-r border-[#E4E4E7] px-[25px] relative' ref={datePickerRef}>
         <h2>När</h2>
