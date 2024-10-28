@@ -1,8 +1,8 @@
+// SearchBar.tsx
 import React, { useState, useRef, useEffect } from "react";
 import GuestSelector from "./guest-selector";
 import DatePicker from "./date-picker";
 import DestinationSearch from "./destination-search";
-
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { ApartmentData } from "@/types/types";
@@ -14,7 +14,7 @@ interface SearchBarProps {
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const [destination, setDestination] = useState(''); 
   const [dates, setDates] = useState<string>(''); 
-  const [guests, setGuests] = useState(0); 
+  const [guests, setGuests] = useState(0);
   const [isGuestSelectorVisible, setIsGuestSelectorVisible] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
 
