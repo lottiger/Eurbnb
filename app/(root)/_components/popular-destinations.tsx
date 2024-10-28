@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useQuery } from 'convex/react';
+import React, { useState, useEffect } from 'react';
+import { useQuery, useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import ApartmentCard from './apartment-card'; // Importera ApartmentCard-komponenten
 import { Id } from '@/convex/_generated/dataModel';
@@ -20,23 +20,41 @@ type ApartmentData = {
   createdAt?: Date;
 };
 
-const PopularDestinations = (): JSX.Element => {
+const PopularDestinations: React.FC = () => {
   const apartments = useQuery(api.functions.apartments.getApartmentsWithImages) as ApartmentData[] | null;
+  const toggleFavoriteMutation = useMutation(api.functions.favorites.toggleFavorite);
   const [favoritedApartments, setFavoritedApartments] = useState<Id<"apartments">[]>([]);
 
-  const popularApartments = apartments?.filter(apartment => apartment.category === 'popular');
+  useEffect(() => {
+    // Initiera favoriter om det behövs från den hämtade datan
+    if (apartments) {
+      const initialFavorites = apartments
+        .filter(apartment => apartment.category === 'popular')
+        .filter(apartment => favoritedApartments.includes(apartment._id))
+        .map(apartment => apartment._id);
 
-  const toggleFavorite = (apartmentId: Id<"apartments">) => {
-    setFavoritedApartments(prev =>
-      prev.includes(apartmentId)
-        ? prev.filter(id => id !== apartmentId)
-        : [...prev, apartmentId]
-    );
+      setFavoritedApartments(initialFavorites);
+    }
+  }, [apartments]);
+
+  const toggleFavorite = async (apartmentId: Id<"apartments">) => {
+    try {
+      await toggleFavoriteMutation({ apartmentId });
+      setFavoritedApartments(prev =>
+        prev.includes(apartmentId)
+          ? prev.filter(id => id !== apartmentId) // Ta bort från favoriter
+          : [...prev, apartmentId] // Lägg till i favoriter
+      );
+    } catch (error) {
+      console.error("Misslyckades att toggla favorit", error);
+    }
   };
 
-  if (!popularApartments) {
+  if (!apartments) {
     return <div>Laddar populära destinationer...</div>;
   }
+
+  const popularApartments = apartments.filter(apartment => apartment.category === 'popular');
 
   return (
     <>
