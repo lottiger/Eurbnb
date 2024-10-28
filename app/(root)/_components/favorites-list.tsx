@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useQuery, useMutation } from 'convex/react';
+import React from 'react';
+import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import ApartmentCard from './apartment-card';
 import { Id } from '@/convex/_generated/dataModel';
+import { useFavorites } from '@/context/favorites-context';
+
 
 type ApartmentData = {
   _id: Id<"apartments">;
@@ -20,29 +22,7 @@ type ApartmentData = {
 
 const FavoriteList: React.FC = () => {
   const favoriteApartments = useQuery(api.functions.favorites.getUserFavorites) as ApartmentData[] | null;
-  const toggleFavoriteMutation = useMutation(api.functions.favorites.toggleFavorite);
-
-  const [favoritedApartments, setFavoritedApartments] = useState<Id<"apartments">[]>([]);
-
-  useEffect(() => {
-    // Sätter initiala favoriter från databasen
-    if (favoriteApartments) {
-      setFavoritedApartments(favoriteApartments.map((apartment) => apartment._id));
-    }
-  }, [favoriteApartments]);
-
-  const handleToggleFavorite = async (apartmentId: Id<"apartments">) => {
-    try {
-      await toggleFavoriteMutation({ apartmentId });
-      setFavoritedApartments((prev) =>
-        prev.includes(apartmentId)
-          ? prev.filter((id) => id !== apartmentId) // Ta bort från lokala favoriter
-          : [...prev, apartmentId] // Lägg till i lokala favoriter
-      );
-    } catch (error) {
-      console.error("Misslyckades att ändra favoriter", error);
-    }
-  };
+  const { favoritedApartments, toggleFavorite } = useFavorites();
 
   if (!favoriteApartments) {
     return <div>Laddar favoriter...</div>;
@@ -54,7 +34,7 @@ const FavoriteList: React.FC = () => {
 
   return (
     <div className="flex flex-wrap gap-[86px] justify-center mx-36">
-      {favoriteApartments.map((apartment) => (
+      {favoriteApartments.map(apartment => (
         <ApartmentCard
           key={apartment._id.toString()}
           apartmentId={apartment._id}
@@ -65,7 +45,7 @@ const FavoriteList: React.FC = () => {
           price={apartment.price}
           images={apartment.images}
           isFavorited={favoritedApartments.includes(apartment._id)}
-          onToggleFavorite={() => handleToggleFavorite(apartment._id)}
+          onToggleFavorite={() => toggleFavorite(apartment._id)}
         />
       ))}
     </div>

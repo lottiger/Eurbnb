@@ -11,8 +11,8 @@ type ApartmentCardProps = {
   beds: number;
   price: number;
   images: string[];
-  isFavorited: boolean;
-  onToggleFavorite: () => void;
+  isFavorited: boolean; // Lägg till denna rad
+  onToggleFavorite: () => void; // Lägg till denna rad
 };
 
 const ApartmentCard: React.FC<ApartmentCardProps> = ({
@@ -23,8 +23,8 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
   beds,
   price,
   images,
-  isFavorited,
-  onToggleFavorite,
+  isFavorited, // Lägg till denna
+  onToggleFavorite, // Lägg till denna
 }) => (
   <div className="relative p-2 rounded-lg mb-4 w-[200px] text-[12px]">
     <ImageCarousel images={images} />
