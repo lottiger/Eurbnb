@@ -6,7 +6,7 @@ import { api } from '@/convex/_generated/api';
 import ApartmentCard from './apartment-card';
 import { Id } from '@/convex/_generated/dataModel';
 import { useFavorites } from '@/context/favorites-context';
-
+import { useAuth } from '@clerk/nextjs'; // Importera Clerk för autentisering
 
 type ApartmentData = {
   _id: Id<"apartments">;
@@ -21,8 +21,13 @@ type ApartmentData = {
 };
 
 const FavoriteList: React.FC = () => {
+  const { isSignedIn } = useAuth(); // Kontrollera om användaren är inloggad
   const favoriteApartments = useQuery(api.functions.favorites.getUserFavorites) as ApartmentData[] | null;
   const { favoritedApartments, toggleFavorite } = useFavorites();
+
+  if (!isSignedIn) {
+    return <div>Logga in för att se dina favoriter</div>;
+  }
 
   if (!favoriteApartments) {
     return <div>Laddar favoriter...</div>;

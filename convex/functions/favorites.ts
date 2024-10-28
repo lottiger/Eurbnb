@@ -1,29 +1,27 @@
 import { mutation, query } from '../_generated/server';
-import { Id } from '../_generated/dataModel'; // Importera Id-typen
+import { Id } from '../_generated/dataModel';
 
+// Mutation för att toggla favoritstatus för en lägenhet
 export const toggleFavorite = mutation(async ({ db, auth }, { apartmentId }: { apartmentId: Id<"apartments"> }) => {
-  const identity = await auth.getUserIdentity(); // Få användarens identitet via Clerk
-
-  // Använd `identity.subject` som är korrekt användar-ID
+  const identity = await auth.getUserIdentity();
   const userId = identity?.subject;
 
   if (!userId || typeof userId !== 'string') {
-    console.error("User not authenticated or user ID is invalid");
     throw new Error('User not authenticated or user ID is invalid');
   }
 
-  // Kontrollera om användaren redan har favoritmarkerat den här lägenheten
+  // Kontrollera om användaren redan har favoritmarkerat denna lägenhet
   const existingFavorite = await db
     .query('favorites')
-    .filter(q => q.eq(q.field('userId'), userId)) // Filtrera efter användarens ID
-    .filter(q => q.eq(q.field('apartmentId'), apartmentId)) // Filtrera efter lägenhets-ID
+    .filter(q => q.eq(q.field('userId'), userId))
+    .filter(q => q.eq(q.field('apartmentId'), apartmentId))
     .first();
 
   if (existingFavorite) {
-    // Om favorit redan existerar, ta bort den
+    // Ta bort om den redan är favoritmarkerad
     await db.delete(existingFavorite._id);
   } else {
-    // Om inte, lägg till den som favorit
+    // Annars, lägg till som favorit
     await db.insert('favorites', {
       userId,
       apartmentId,
@@ -31,43 +29,41 @@ export const toggleFavorite = mutation(async ({ db, auth }, { apartmentId }: { a
   }
 });
 
-
+// Query för att hämta användarens favoritmarkerade lägenheter
 export const getUserFavorites = query(async ({ db, auth, storage }) => {
-  const identity = await auth.getUserIdentity(); // Hämta användarens identitet
+  const identity = await auth.getUserIdentity();
+  const userId = identity?.subject;
 
-  if (!identity?.subject) {
-    throw new Error('User not authenticated');
+  // Om ingen användare är inloggad, returnera en tom lista
+  if (!userId) {
+    console.warn('User not authenticated when accessing favorites');
+    return [];
   }
 
-  const userId = identity.subject;
-
   // Hämta alla favoritmarkerade lägenheter för denna användare
-  const favorites = await db.query('favorites')
+  const favorites = await db
+    .query('favorites')
     .filter(q => q.eq(q.field('userId'), userId))
     .collect();
 
-  const favoriteApartments = [];
+  // Skapa lista med lägenheter baserat på användarens favoriter
+  const favoriteApartments = await Promise.all(
+    favorites.map(async (favorite) => {
+      const apartment = await db.get(favorite.apartmentId);
+      if (apartment) {
+        // Hämta bild-URL:er för varje apartment
+        const imageUrls = await Promise.all(
+          apartment.images.map((imageId: Id<'_storage'>) => storage.getUrl(imageId))
+        );
+        return {
+          ...apartment,
+          images: imageUrls, // Byt ut bild-ID:n med URL:er för visning
+        };
+      }
+      return null; // Om apartment inte finns, returnera null
+    })
+  );
 
-  // Hämta detaljerna för varje favoritmarkerad lägenhet
-  for (const favorite of favorites) {
-    const apartment = await db.get(favorite.apartmentId);
-    if (apartment) {
-      // Hämta bilder för varje apartment via dess storageId om det behövs
-      const imageUrls = await Promise.all(
-        apartment.images.map(async (imageId: any) => {
-          return storage.getUrl(imageId); // Antag att du lagrar bilder i Convex storage
-        })
-      );
-
-      favoriteApartments.push({
-        ...apartment,
-        images: imageUrls // Ersätt bild-ID:n med URL:er för visning
-      });
-    }
-  }
-
-  return favoriteApartments;
+  // Filtrera bort null-värden från lägenheter som inte längre existerar
+  return favoriteApartments.filter(apartment => apartment !== null);
 });
-
-
-
