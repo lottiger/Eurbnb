@@ -7,18 +7,18 @@ import ImageCarousel from './image-carousel';
 import FavoriteButton from './favorites-button';
 import { Id } from '@/convex/_generated/dataModel'; // Importera Id-typen
 
-// Typ för favoritmarkerade lägenheter
-// type ApartmentData = {
-//   _id: Id<"apartments">; // Convex-ID
-//   title: string;
-//   description: string;
-//   bedrooms: number;
-//   beds: number;
-//   price: number;
-//   images: string[];
-//   country: string;
-//   city: string;
-// };
+
+type ApartmentData = {
+  _id: Id<"apartments">; // Convex-ID
+  title: string;
+  description: string;
+  bedrooms: number;
+  beds: number;
+  price: number;
+  images: string[];
+  country: string;
+  city: string;
+};
 
 const FavoriteList: React.FC = () => {
   const favoriteApartments = useQuery(api.functions.favorites.getUserFavorites) as ApartmentData[] | null;
