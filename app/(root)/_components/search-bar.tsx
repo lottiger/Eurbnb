@@ -1,17 +1,25 @@
-import React, { useState, useRef, useEffect } from "react"; 
+import React, { useState, useRef, useEffect } from "react";
 import GuestSelector from "./guest-selector";
 import DatePicker from "./date-picker";
+import DestinationSearch from "./destination-search";
+
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { ApartmentData } from "@/types/types";
 
 interface SearchBarProps {
   onSearch: (destination: string, dates: string, guests: number) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
-  const [destination, setDestination] = useState('');
-  const [guests, setGuests] = useState(0);
-  const [dates, setDates] = useState<string>(''); 
-  const [isGuestSelectorVisible, setIsGuestSelectorVisible] = useState(false); 
+  const [destination, setDestination] = useState(''); // Vald destination
+  const [dates, setDates] = useState<string>(''); // Valda datum
+  const [guests, setGuests] = useState(0); // Totalt antal gäster
+  const [filteredApartments, setFilteredApartments] = useState<ApartmentData[]>([]); // Filtrerade lägenheter
+  const [isGuestSelectorVisible, setIsGuestSelectorVisible] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
+
+  const allApartments = useQuery(api.functions.apartments.getApartmentsWithImages) as ApartmentData[] | null;
 
   const guestSelectorRef = useRef<HTMLDivElement>(null);
   const datePickerRef = useRef<HTMLDivElement>(null);
@@ -19,8 +27,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
-
-      // Om användaren klickar utanför både GuestSelector och DatePicker, stäng dem
       if (
         guestSelectorRef.current && !guestSelectorRef.current.contains(target) &&
         datePickerRef.current && !datePickerRef.current.contains(target)
@@ -29,41 +35,50 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         setIsDatePickerVisible(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
+  // Uppdaterar sökparametrar och skickar till onSearch
   const handleSearch = () => {
     onSearch(destination, dates, guests);
   };
 
   const handleGuestUpdate = (adults: number, children: number, infants: number) => {
-    const totalGuests = adults + children + infants;
-    setGuests(totalGuests);
+    setGuests(adults + children + infants);
   };
 
   const handleDateSelect = (start: Date | null, end: Date | null) => {
     if (start && end) {
-      const formattedDates = `${start.toLocaleDateString("sv-SE", { day: "numeric", month: "short" })} - ${end.toLocaleDateString("sv-SE", { day: "numeric", month: "short" })}`;
-      setDates(formattedDates);
+      setDates(`${start.toLocaleDateString("sv-SE", { day: "numeric", month: "short" })} - ${end.toLocaleDateString("sv-SE", { day: "numeric", month: "short" })}`);
     } else {
-      setDates(''); 
+      setDates('');
     }
-    setIsDatePickerVisible(false); 
+    setIsDatePickerVisible(false);
+  };
+
+  const handleDestinationChange = (term: string) => {
+    setDestination(term);
+    if (allApartments) {
+      const filtered = allApartments.filter(apartment =>
+        apartment.country.toLowerCase().includes(term.toLowerCase()) ||
+        apartment.city.toLowerCase().includes(term.toLowerCase())
+      );
+      setFilteredApartments(filtered); // Uppdaterar de filtrerade lägenheterna
+    }
   };
 
   return (
     <div className='shadow-md rounded-[50px] flex py-[11px] px-[34px] text-[14px] items-center'>
-      <div className='border-r border-[#E4E4E7] px-[25px]'>
+      <div className='border-r border-[#E4E4E7] px-[25px] relative'>
         <h2>Vart</h2>
         <input
           type="text"
           placeholder="Sök destination"
           value={destination}
-          onChange={(e) => setDestination(e.target.value)}
+          onChange={(e) => handleDestinationChange(e.target.value)}
           className="text-gray-500 pt-[10px] bg-transparent focus:outline-none"
         />
       </div>
@@ -75,7 +90,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         >
           {dates || 'Lägg till datum'}
         </p>
-
         {isDatePickerVisible && (
           <div className="absolute top-[68px] -left-[155px] bg-white rounded shadow-md z-50">
             <DatePicker onSelectDates={handleDateSelect} />
@@ -90,7 +104,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         >
           {guests > 0 ? `${guests} gäst${guests > 1 ? 'er' : ''}` : 'Lägg till gäster'}
         </p>
-
         {isGuestSelectorVisible && (
           <div className="absolute top-[68px] -left-[155px] bg-white rounded shadow-md z-50">
             <GuestSelector onGuestUpdate={handleGuestUpdate} onClose={() => setIsGuestSelectorVisible(false)} />

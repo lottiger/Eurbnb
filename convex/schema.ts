@@ -14,6 +14,7 @@ const schema = defineSchema({
     city: v.string(),
     category: v.optional(v.union(v.literal('offer'), v.literal('popular'))), // Valbart fält
   }),
+ 
   
   favorites: defineTable({
     userId: v.string(), // Clerk user ID
