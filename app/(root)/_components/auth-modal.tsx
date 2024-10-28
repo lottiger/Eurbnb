@@ -25,7 +25,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center">
+    <div className="fixed inset-0 flex items-center justify-center z-50">
       <div ref={modalRef} className="bg-white p-8 rounded-lg shadow-lg w-[555px] h-[247px] text-center flex items-center justify-center flex-col">
         
         <p className="text-[16px] font-semibold">Du måste vara inloggad för att spara boendet</p>
