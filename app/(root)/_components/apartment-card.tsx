@@ -3,8 +3,9 @@ import React, { useState } from 'react';
 import ImageCarousel from './image-carousel';
 import FavoriteButton from './favorites-button';
 import { Id } from '@/convex/_generated/dataModel';
-import AuthModal from './auth-modal'; // Importera AuthModal
-import { useAuth } from '@clerk/nextjs'; // Importera Clerk för inloggning
+import AuthModal from './auth-modal';
+import { useAuth } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 
 type ApartmentCardProps = {
   apartmentId: Id<"apartments">;
@@ -19,7 +20,7 @@ type ApartmentCardProps = {
   onToggleFavorite: () => void;
 };
 
-const ApartmentCard: React.FC<ApartmentCardProps> = ({
+const ApartmentCard = ({
   apartmentId,
   title,
   description,
@@ -30,9 +31,10 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
   rating,
   isFavorited,
   onToggleFavorite,
-}) => {
-  const { isSignedIn } = useAuth(); // Kolla inloggningsstatus
+}: ApartmentCardProps): JSX.Element => {
+  const { isSignedIn } = useAuth();
   const [isModalOpen, setModalOpen] = useState(false);
+  const router = useRouter(); // Använd router för navigering
 
   const handleFavoriteClick = () => {
     if (isSignedIn) {
@@ -42,13 +44,22 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
     }
   };
 
+  // Hantera klick på titeln för navigering till detailsidan
+  const handleTitleClick = () => {
+    router.push(`/details/${apartmentId.toString()}`);
+  };
+
   return (
     <div className="relative p-2 rounded-lg mb-4 w-[200px] text-[12px]">
       <ImageCarousel images={images} />
+
       <FavoriteButton isFavorited={isFavorited} onToggle={handleFavoriteClick} />
-      
+
       <div className="flex justify-between font-semibold mt-2">
-        <h3>{title}</h3>
+        {/* Navigera till detaljsidan när man klickar på titeln */}
+        <h3 className="cursor-pointer hover:underline" onClick={handleTitleClick}>
+          {title}
+        </h3>
         <div className="flex items-center">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M2.9125 11L3.725 7.4875L1 5.125L4.6 4.8125L6 1.5L7.4 4.8125L11 5.125L8.275 7.4875L9.0875 11L6 9.1375L2.9125 11Z" fill="#1D1B20" />

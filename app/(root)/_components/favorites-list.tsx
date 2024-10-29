@@ -21,7 +21,7 @@ type ApartmentData = {
   city: string;
 };
 
-const FavoriteList: React.FC = () => {
+const FavoriteList = (): JSX.Element => {
   const { isSignedIn } = useAuth(); // Kontrollera om användaren är inloggad
   const favoriteApartments = useQuery(api.functions.favorites.getUserFavorites) as ApartmentData[] | null;
   const { favoritedApartments, toggleFavorite } = useFavorites();

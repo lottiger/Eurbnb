@@ -3,13 +3,12 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import DropdownMenu from './drop-down';
-import SearchBar from './search-bar';
 
-interface HeaderProps {
-  onSearch: (destination: string) => void; // Prop för att hantera söktermen
-}
 
-const Header: React.FC<HeaderProps> = ({ onSearch }) => {
+
+
+
+const HeaderWithoutSearch = (): JSX.Element => {
   const router = useRouter();
 
   const handleTitleClick = () => {
@@ -23,10 +22,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
           EurBNB
         </h1>
       </div>
-      <SearchBar onSearch={onSearch} /> {/* Skicka onSearch till SearchBar */}
       <DropdownMenu />
     </div>
   );
 };
 
-export default Header;
+export default HeaderWithoutSearch
