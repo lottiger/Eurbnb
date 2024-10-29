@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-
 interface CarouselProps {
   images: string[]; // En array av bild-URL:er
+  size?: 'small' | 'large'; // Valfritt prop för storlek, där standard är 'small'
 }
 
-const ImageCarousel: React.FC<CarouselProps> = ({ images }) => {
+const ImageCarousel = ({ images, size = 'small' }: CarouselProps): JSX.Element => {
   const [currentIndex, setCurrentIndex] = useState(0); // Spåra vilken bild som visas
 
   // Gå till nästa bild
@@ -20,34 +20,62 @@ const ImageCarousel: React.FC<CarouselProps> = ({ images }) => {
     );
   };
 
+  const dimensions = size === 'large' ? 'w-[914] h-[334px]' : 'w-[200px] h-[165px]'; // Dynamiska dimensioner
+
   return (
-    <div className="relative w-[200px] h-[165px]">
+    <div className={`relative ${dimensions}`}>
       <img
         src={images[currentIndex]}
         alt={`Bild ${currentIndex + 1}`}
         className="w-full h-full object-cover rounded-lg"
       />
-      
+
       {/* Knapp för att gå till föregående bild */}
       <button
         onClick={prevImage}
-        className="absolute top-1/2 left-0 transform -translate-y-1/2 text-black p-2"
+        className="absolute top-1/2 left-2 transform -translate-y-1/2"
       >
-        {/* &#8592; */}
+        <svg
+          width="20"
+          height="21"
+          viewBox="0 0 20 21"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="rotate-180"
+        >
+          <path
+            d="M4.16663 10.0001H15.8333M15.8333 10.0001L9.99996 4.16675M15.8333 10.0001L9.99996 15.8334"
+            stroke="black"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
       </button>
 
       {/* Knapp för att gå till nästa bild */}
       <button
         onClick={nextImage}
-        className="absolute top-1/2 right-0 transform -translate-y-1/2 text-black p-2 "
+        className="absolute top-1/2 right-2 transform -translate-y-1/2"
       >
-        <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M4.16663 10.0001H15.8333M15.8333 10.0001L9.99996 4.16675M15.8333 10.0001L9.99996 15.8334" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-</svg>
-
+        <svg
+          width="20"
+          height="21"
+          viewBox="0 0 20 21"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M4.16663 10.0001H15.8333M15.8333 10.0001L9.99996 4.16675M15.8333 10.0001L9.99996 15.8334"
+            stroke="black"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
       </button>
 
-      {/* Indikatorer för vilken bild som visas */}
+        {/* Indikatorer för vilken bild som visas */}
       {/* <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2">
         {images.map((_, index) => (
           <div
@@ -58,6 +86,7 @@ const ImageCarousel: React.FC<CarouselProps> = ({ images }) => {
           />
         ))}
       </div> */}
+    
     </div>
   );
 };
