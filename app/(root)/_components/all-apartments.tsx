@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery } from 'convex/react';
+import { useQuery, useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { ApartmentData } from '@/types/types';
 import { Id } from '@/convex/_generated/dataModel';
@@ -11,9 +11,20 @@ interface AllApartmentsProps {
 
 const AllApartments: React.FC<AllApartmentsProps> = ({ searchTerm }) => {
   const apartments = useQuery(api.functions.apartments.getApartmentsWithImages) as ApartmentData[] | null;
+  const userFavorites = useQuery(api.functions.favorites.getUserFavorites) as ApartmentData[] | null;
+  const toggleFavoriteMutation = useMutation(api.functions.favorites.toggleFavorite);
+
   const [filteredApartments, setFilteredApartments] = useState<ApartmentData[]>([]);
   const [favoritedApartments, setFavoritedApartments] = useState<Id<"apartments">[]>([]);
   const [matchingCities, setMatchingCities] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (userFavorites) {
+      // Extrahera ID:n från favoriterna och uppdatera `favoritedApartments`
+      const favoriteIds = userFavorites.map(favorite => favorite._id);
+      setFavoritedApartments(favoriteIds);
+    }
+  }, [userFavorites]);
 
   useEffect(() => {
     if (apartments) {
@@ -23,18 +34,22 @@ const AllApartments: React.FC<AllApartmentsProps> = ({ searchTerm }) => {
       );
       setFilteredApartments(filtered);
 
-      // Skapa en lista av unika städer för den aktuella sökningen
       const cities = Array.from(new Set(filtered.map(apartment => apartment.city)));
       setMatchingCities(cities);
     }
   }, [searchTerm, apartments]);
 
-  const toggleFavorite = (apartmentId: Id<"apartments">) => {
-    setFavoritedApartments(prev =>
-      prev.includes(apartmentId)
-        ? prev.filter(id => id !== apartmentId)
-        : [...prev, apartmentId]
-    );
+  const toggleFavorite = async (apartmentId: Id<"apartments">) => {
+    try {
+      await toggleFavoriteMutation({ apartmentId });
+      setFavoritedApartments(prev =>
+        prev.includes(apartmentId)
+          ? prev.filter(id => id !== apartmentId)
+          : [...prev, apartmentId]
+      );
+    } catch (error) {
+      console.error("Failed to toggle favorite:", error);
+    }
   };
 
   if (!filteredApartments.length) return <div>Inga lägenheter hittades...</div>;
@@ -42,12 +57,12 @@ const AllApartments: React.FC<AllApartmentsProps> = ({ searchTerm }) => {
   return (
     <div className=''>
       <div className='mt-20 mx-36'>
-      <p className=" mb-10 font-semibold text-[16px]">
-        {filteredApartments.length} {filteredApartments.length === 1 ? 'boende' : 'boenden'} 
-        {matchingCities.length > 0 && (
-          <> i {matchingCities.join(', ')}</>
-        )}
-      </p>
+        <p className="mb-10 font-semibold text-[16px]">
+          {filteredApartments.length} {filteredApartments.length === 1 ? 'boende' : 'boenden'} 
+          {matchingCities.length > 0 && (
+            <> i {matchingCities.join(', ')}</>
+          )}
+        </p>
       </div>
       
       <div className="flex flex-wrap gap-[86px] justify-center mx-36">
@@ -61,6 +76,7 @@ const AllApartments: React.FC<AllApartmentsProps> = ({ searchTerm }) => {
             beds={apartment.beds}
             price={apartment.price}
             images={apartment.images}
+            rating={apartment.rating}
             isFavorited={favoritedApartments.includes(apartment._id)}
             onToggleFavorite={() => toggleFavorite(apartment._id)}
           />

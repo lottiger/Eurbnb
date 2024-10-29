@@ -16,6 +16,7 @@ type ApartmentData = {
   beds: number;
   price: number;
   images: string[];
+  rating?: number;
   country: string;
   city: string;
 };
@@ -49,6 +50,7 @@ const FavoriteList: React.FC = () => {
           beds={apartment.beds}
           price={apartment.price}
           images={apartment.images}
+          rating={apartment.rating}
           isFavorited={favoritedApartments.includes(apartment._id)}
           onToggleFavorite={() => toggleFavorite(apartment._id)}
         />

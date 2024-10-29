@@ -20,6 +20,9 @@ type Apartments = {
   city: string;
   category?: 'offer' | 'popular' | null; // Kategorifält som kan vara valbart
   createdAt?: Date;
+  rating?: number; // Valbart betygsfält
+  amenities?: string[]; // Valbar array av bekvämligheter
+  hostName?: string; // Valbart namn för värd
 };
 
 // Typ för input när du skapar eller uppdaterar en lägenhet
@@ -33,6 +36,9 @@ type ApartmentInput = {
   country: string;
   city: string;
   category?: 'offer' | 'popular' | null; // Valbar kategori för erbjudanden eller populära destinationer
+  rating?: number; // Valbart betygsfält
+  amenities?: string[]; // Valbar array av bekvämligheter
+  hostName?: string; // Valbart namn för värd
 };
 
 // Typ för varje lägenhetsobjekt efter att ha hämtat dem från databasen
@@ -48,6 +54,9 @@ type ApartmentData = {
   city: string;
   category?: 'offer' | 'popular' | null; // Fält för att hantera kategorin
   createdAt?: Date;
+  rating?: number; // Valbart betygsfält
+  amenities?: string[]; // Valbar array av bekvämligheter
+  hostName?: string; // Valbart namn för värd
 };
 
 // Typ för favoritdata, t.ex. användarens favoritlägenheter

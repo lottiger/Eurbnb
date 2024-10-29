@@ -13,9 +13,12 @@ export const createApartment = mutation({
     country: v.string(),
     city: v.string(),
     category: v.optional(v.union(v.literal('offer'), v.literal('popular'))), // Valbart fält för kategori
+    rating: v.optional(v.number()), // Betyg, valbart och av typen nummer
+    amenities: v.optional(v.array(v.string())), // Array av bekvämligheter, valbart och av typen array av strängar
+    hostName: v.optional(v.string()), // Värdens namn, valbart och av typen sträng
   },
   
-  handler: async (ctx, { title, description, bedrooms, beds, price, images, country, city, category }) => {
+  handler: async (ctx, { title, description, bedrooms, beds, price, images, country, city, category, rating, amenities, hostName }) => {
     await ctx.db.insert('apartments', { 
       title, 
       description, 
@@ -24,7 +27,10 @@ export const createApartment = mutation({
       price, 
       images, 
       country, 
-      city, 
+      city,
+      rating,
+      amenities,
+      hostName,
       ...(category ? { category } : {})
     });
   }

@@ -18,6 +18,7 @@ type ApartmentData = {
   images: string[];
   country: string;
   city: string;
+  rating?: number;
   category?: 'offer' | 'popular' | null;
   createdAt?: Date;
 };
@@ -46,6 +47,7 @@ const PopularDestinations: React.FC = () => {
             beds={apartment.beds}
             price={apartment.price}
             images={apartment.images}
+            rating={apartment.rating}
             isFavorited={favoritedApartments.includes(apartment._id)}
             onToggleFavorite={() => toggleFavorite(apartment._id)}
           />

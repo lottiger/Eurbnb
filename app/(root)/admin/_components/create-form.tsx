@@ -6,53 +6,63 @@ import { api } from "@/convex/_generated/api";
 import { Id } from '@/convex/_generated/dataModel'; // Importera Id från Convex
 
 export default function CreateApartment(): JSX.Element {
-  const [apartment, setApartment] = useState({
-    title: '',
-    description: '',
-    bedrooms: 0,
-    beds: 0,
-    price: 0,
-    country: '',
-    city: '',
-    category: '', // Nytt fält för kategori
-    images: [], // Tom array för bilder
-  });
+  // Importera rätt typ för att undvika "never" fel
+const [apartment, setApartment] = useState<{
+  title: string;
+  description: string;
+  bedrooms: number;
+  beds: number;
+  price: number;
+  country: string;
+  city: string;
+  category: string;
+  images: Id<"_storage">[]; // Typen för bilder
+  rating?: number; // Valbart fält för betyg
+  amenities: string[]; // Bekvämligheter som en array av strängar
+  hostName?: string; // Värdens namn som valbart fält
+}>({
+  title: '',
+  description: '',
+  bedrooms: 0,
+  beds: 0,
+  price: 0,
+  country: '',
+  city: '',
+  category: '',
+  images: [],
+  rating: undefined,
+  amenities: [], // Initiera som tom array
+  hostName: '',
+});
 
   const generateUploadUrl = useMutation(api.functions.images.generateUploadUrl);
   const createApartment = useMutation(api.functions.apartments.createApartment);
 
-  const [selectedImages, setSelectedImages] = useState<File[]>([]); // Filobjekt
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]); // Förhandsvisning av bilder
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
-  // Hantera filinmatning och generera förhandsvisningar
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const filesArray = Array.from(e.target.files); // Konvertera FileList till en array av File-objekt
-
-      // Kombinera tidigare valda filer med de nya filerna
+      const filesArray = Array.from(e.target.files);
       setSelectedImages((prevSelectedImages) => [...prevSelectedImages, ...filesArray]);
 
-      // Generera förhandsvisningar
       const newPreviews: string[] = [];
       filesArray.forEach(file => {
         const reader = new FileReader();
         reader.onload = (event) => {
           if (event.target?.result) {
             newPreviews.push(event.target.result as string);
-            setImagePreviews((prevPreviews) => [...prevPreviews, ...newPreviews]); // Lägg till nya förhandsvisningar
+            setImagePreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
           }
         };
-        reader.readAsDataURL(file); // Läsa in varje bild och skapa en base64-url för förhandsvisning
+        reader.readAsDataURL(file);
       });
     }
   };
 
-  // Hantera form-inlämning
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
-    let images: Id<"_storage">[] = []; // Array för lagrade bild-ID:n
-
+    let images: Id<"_storage">[] = [];
     try {
       if (selectedImages.length > 0) {
         for (const image of selectedImages) {
@@ -63,7 +73,7 @@ export default function CreateApartment(): JSX.Element {
             body: image,
           });
           const { storageId } = await result.json();
-          images.push(storageId); // Lägg till varje bilds storageId i arrayen
+          images.push(storageId);
         }
       } else {
         throw new Error('No images selected');
@@ -72,26 +82,20 @@ export default function CreateApartment(): JSX.Element {
       console.error('Image upload failed:', error);
     }
 
-    // Validera att kategorin är korrekt
     const validCategory = apartment.category === 'offer' || apartment.category === 'popular'
       ? apartment.category
       : undefined;
 
     try {
-      // Skicka uppdaterad lägenhetsdata till API:et
       await createApartment({
-        title: apartment.title,
-        description: apartment.description,
-        bedrooms: apartment.bedrooms,
-        beds: apartment.beds,
-        price: apartment.price,
-        images: images, // Skicka arrayen av bild-ID:n till API:et
-        country: apartment.country,
-        city: apartment.city,
-        category: validCategory, // Skicka validerad kategori eller undefined
+        ...apartment,
+        images,
+        category: validCategory,
+        rating: apartment.rating || undefined,
+        amenities: apartment.amenities.length > 0 ? apartment.amenities : undefined,
+        hostName: apartment.hostName || undefined,
       });
       alert('Lägenhet skapad framgångsrikt!');
-      // Återställ formuläret
       setApartment({
         title: '',
         description: '',
@@ -101,27 +105,37 @@ export default function CreateApartment(): JSX.Element {
         country: '',
         city: '',
         category: '',
-        images: [], // Återställ bilder
+        images: [],
+        rating: undefined,
+        amenities: [],
+        hostName: '',
       });
-      setSelectedImages([]); // Nollställ valda bilder
-      setImagePreviews([]); // Nollställ förhandsvisningar
+      setSelectedImages([]);
+      setImagePreviews([]);
     } catch (error) {
       console.error('Error creating apartment:', error);
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setApartment({
       ...apartment,
-      [name]: ['price', 'bedrooms', 'beds'].includes(name) ? Number(value) : value,
+      [name]: ['price', 'bedrooms', 'beds', 'rating'].includes(name) ? Number(value) : value,
+    });
+  };
+
+  const handleAmenitiesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const amenities = e.target.value.split(',').map((item) => item.trim());
+    setApartment({
+      ...apartment,
+      amenities,
     });
   };
 
   return (
     <div>
       <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-10">
-        {/* Titel */}
         <div>
           <label htmlFor="title">Titel:</label>
           <input
@@ -133,7 +147,6 @@ export default function CreateApartment(): JSX.Element {
           />
         </div>
 
-        {/* Beskrivning */}
         <div className="mt-4">
           <label htmlFor="description">Beskrivning:</label>
           <input
@@ -145,7 +158,6 @@ export default function CreateApartment(): JSX.Element {
           />
         </div>
 
-        {/* Sovrum */}
         <div className="mt-4">
           <label htmlFor="bedrooms">Antal sovrum:</label>
           <input
@@ -158,7 +170,6 @@ export default function CreateApartment(): JSX.Element {
           />
         </div>
 
-        {/* Sängar */}
         <div className="mt-4">
           <label htmlFor="beds">Antal sängar:</label>
           <input
@@ -171,7 +182,6 @@ export default function CreateApartment(): JSX.Element {
           />
         </div>
 
-        {/* Pris */}
         <div className="mt-4">
           <label htmlFor="price">Pris per natt:</label>
           <input
@@ -184,7 +194,6 @@ export default function CreateApartment(): JSX.Element {
           />
         </div>
 
-        {/* Land */}
         <div className="mt-4">
           <label htmlFor="country">Land:</label>
           <input
@@ -196,7 +205,6 @@ export default function CreateApartment(): JSX.Element {
           />
         </div>
 
-        {/* Stad */}
         <div className="mt-4">
           <label htmlFor="city">Stad:</label>
           <input
@@ -208,7 +216,6 @@ export default function CreateApartment(): JSX.Element {
           />
         </div>
 
-        {/* Kategori (erbjudanden eller populära destinationer) */}
         <div className="mt-4">
           <label htmlFor="category">Kategori:</label>
           <select
@@ -224,19 +231,54 @@ export default function CreateApartment(): JSX.Element {
           </select>
         </div>
 
-        {/* Lägg till bilder */}
+        <div className="mt-4">
+          <label htmlFor="rating">Betyg:</label>
+          <input
+            id="rating"
+            name="rating"
+            type="number"
+            step="0.1"
+            min="0"
+            max="5"
+            value={apartment.rating || ''}
+            onChange={handleChange}
+            className="block w-full mt-1 border border-gray-300 rounded px-3 py-2"
+          />
+        </div>
+
+        <div className="mt-4">
+          <label htmlFor="amenities">Bekvämligheter (komma-separerade):</label>
+          <textarea
+            id="amenities"
+            name="amenities"
+            value={apartment.amenities.join(', ')}
+            onChange={handleAmenitiesChange}
+            className="block w-full mt-1 border border-gray-300 rounded px-3 py-2"
+          />
+        </div>
+
+        <div className="mt-4">
+          <label htmlFor="hostName">Värdens namn:</label>
+          <input
+            id="hostName"
+            name="hostName"
+            value={apartment.hostName}
+            onChange={handleChange}
+            className="block w-full mt-1 border border-gray-300 rounded px-3 py-2"
+          />
+        </div>
+
         <div className="mt-4">
           <label htmlFor="images">Lägg till bilder:</label>
           <input
             id="images"
             type="file"
             multiple
-            onChange={handleImageChange} // Hantera bildinmatning och förhandsvisning
+            onChange={handleImageChange}
             className="block w-full mt-1 border border-gray-300 rounded px-3 py-2"
           />
         </div>
 
-        {/* Förhandsgranskning av bilder */}
         <div className="mt-4 grid grid-cols-3 gap-4">
           {imagePreviews.map((preview, index) => (
             <img
@@ -248,7 +290,6 @@ export default function CreateApartment(): JSX.Element {
           ))}
         </div>
 
-        {/* Skapa Lägenhet-knapp */}
         <button type="submit" className="mt-6 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
           Skapa lägenhet
         </button>
