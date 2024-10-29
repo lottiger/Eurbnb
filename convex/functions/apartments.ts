@@ -9,15 +9,14 @@ export const createApartment = mutation({
     bedrooms: v.number(),
     beds: v.number(),
     price: v.number(),
-    images: v.array(v.id('_storage')), // Ändrat för att stödja en array av bilder
+    images: v.array(v.id('_storage')), 
     country: v.string(),
     city: v.string(),
-    category: v.optional(v.union(v.literal('offer'), v.literal('popular'))), // Valbart fält för kategori
-    rating: v.optional(v.number()), // Betyg, valbart och av typen nummer
-    amenities: v.optional(v.array(v.string())), // Array av bekvämligheter, valbart och av typen array av strängar
-    hostName: v.optional(v.string()), // Värdens namn, valbart och av typen sträng
+    category: v.optional(v.union(v.literal('offer'), v.literal('popular'))), 
+    rating: v.optional(v.number()), 
+    amenities: v.optional(v.array(v.string())), 
+    hostName: v.optional(v.string()), 
   },
-  
   handler: async (ctx, { title, description, bedrooms, beds, price, images, country, city, category, rating, amenities, hostName }) => {
     await ctx.db.insert('apartments', { 
       title, 
@@ -38,22 +37,19 @@ export const createApartment = mutation({
 
 // Query för att hämta alla lägenheter med bild-URL:er
 export const getApartmentsWithImages = query(async (ctx) => {
-  // Hämta alla lägenheter
   const apartments = await ctx.db.query('apartments').collect();
 
-  // Loop igenom varje lägenhet och hämta bilderna från _storage
   const apartmentsWithImages = await Promise.all(
     apartments.map(async (apartment) => {
       const images = await Promise.all(
         apartment.images.map(async (imageId) => {
           const url = await ctx.storage.getUrl(imageId);
-          return url; // Returnerar URL för varje bild
+          return url;
         })
       );
-
       return {
         ...apartment,
-        images, // Lägg till bild-URL:erna i lägenhetsobjektet
+        images, 
       };
     })
   );
@@ -64,23 +60,19 @@ export const getApartmentsWithImages = query(async (ctx) => {
 // Query för att hämta lägenheter baserat på kategori
 export const getApartmentsByCategory = query({
   args: {
-    category: v.optional(v.union(v.literal('offer'), v.literal('popular'))), // Valbart argument för kategori
+    category: v.optional(v.union(v.literal('offer'), v.literal('popular'))), 
   },
-  
   handler: async (ctx, { category }) => {
     let apartments;
 
     if (category) {
-      // Hämta lägenheter som matchar den angivna kategorin
       apartments = await ctx.db.query('apartments')
         .filter(q => q.eq(q.field('category'), category))
         .collect();
     } else {
-      // Hämta alla lägenheter om ingen kategori är specificerad
       apartments = await ctx.db.query('apartments').collect();
     }
 
-    // Loop igenom varje lägenhet och hämta bilderna från _storage
     const apartmentsWithImages = await Promise.all(
       apartments.map(async (apartment) => {
         const images = await Promise.all(
@@ -89,7 +81,6 @@ export const getApartmentsByCategory = query({
             return url;
           })
         );
-
         return {
           ...apartment,
           images,
@@ -100,3 +91,28 @@ export const getApartmentsByCategory = query({
     return apartmentsWithImages;
   }
 });
+
+// Query för att hämta en specifik lägenhet baserat på ID
+export const getApartmentById = query({
+  args: { _id: v.id('apartments') }, // Uppdaterat till _id
+  handler: async (ctx, { _id }) => { // Använd _id istället för id
+    const apartment = await ctx.db.get(_id);
+
+    if (!apartment) {
+      throw new Error(`Lägenheten med ID ${_id} hittades inte.`);
+    }
+
+    const images = await Promise.all(
+      apartment.images.map(async (imageId) => {
+        const url = await ctx.storage.getUrl(imageId);
+        return url;
+      })
+    );
+
+    return {
+      ...apartment,
+      images, 
+    };
+  }
+});
+

@@ -64,3 +64,4 @@ type FavoriteData = {
   userId: string; // Användarens ID (från Clerk)
   apartmentId: Id<"apartments">; // Favoritlägenhetens ID
 };
+

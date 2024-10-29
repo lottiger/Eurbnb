@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 
+
+interface CarouselProps {
+  images: string[]; // En array av bild-URL:er
+}
+
 const ImageCarousel: React.FC<CarouselProps> = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0); // Spåra vilken bild som visas
 
