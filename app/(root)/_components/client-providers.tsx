@@ -4,6 +4,8 @@ import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { ClerkProvider, useAuth } from "@clerk/nextjs";
 import {  ConvexReactClient } from "convex/react";
 import { FavoritesProvider } from "@/context/favorites-context";
+import { DateProvider } from "@/context/date-context";
+import { GuestProvider } from "@/context/guest-context";
 
 
 // Kontrollera Convex URL
@@ -19,7 +21,11 @@ export function ClientProviders({ children }: { children: React.ReactNode }) {
     <ClerkProvider>
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
        <FavoritesProvider>
+        <DateProvider>
+          <GuestProvider>
         {children}
+        </GuestProvider>
+        </DateProvider>
         </FavoritesProvider>
       </ConvexProviderWithClerk>
     </ClerkProvider>

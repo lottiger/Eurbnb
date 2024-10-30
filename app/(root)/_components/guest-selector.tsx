@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
+import { useGuestContext } from '@/context/guest-context';
 
 interface GuestSelectorProps {
-  onGuestUpdate: (adults: number, children: number, infants: number) => void; // Prop för att skicka tillbaka gästerna
-  onClose: () => void; // Ny prop för att stänga GuestSelector
+  onClose: () => void; // Prop för att stänga GuestSelector
 }
 
-const GuestSelector: React.FC<GuestSelectorProps> = ({ onGuestUpdate, onClose }) => {
+const GuestSelector: React.FC<GuestSelectorProps> = ({ onClose }) => {
+  const { guests, updateGuests } = useGuestContext();
   const [adults, setAdults] = useState(0);
   const [children, setChildren] = useState(0);
   const [infants, setInfants] = useState(0);
   const maxGuests = 10; // Max antal gäster totalt
 
-  // Uppdaterar antalet vuxna, barn och spädbarn och skickar tillbaka det till föräldrakomponenten
+  // Uppdaterar totalantalet gäster i kontext när vuxna, barn eller spädbarn ändras
   useEffect(() => {
-    onGuestUpdate(adults, children, infants);
-  }, [adults, children, infants]);
+    const totalGuests = adults + children + infants;
+    updateGuests(totalGuests);
+  }, [adults, children, infants, updateGuests]);
 
   // Totalt antal gäster för att kontrollera maxgränsen
   const totalGuests = adults + children + infants;
@@ -29,7 +31,6 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({ onGuestUpdate, onClose })
         <div className="flex items-center">
           <button 
             onClick={() => { setAdults(adults > 0 ? adults - 1 : 0); }}
-           
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M3 7H11M13.5 7C13.5 8.72391 12.8152 10.3772 11.5962 11.5962C10.3772 12.8152 8.72391 13.5 7 13.5C5.27609 13.5 3.62279 12.8152 2.40381 11.5962C1.18482 10.3772 0.5 8.72391 0.5 7C0.5 5.27609 1.18482 3.62279 2.40381 2.40381C3.62279 1.18482 5.27609 0.5 7 0.5C8.72391 0.5 10.3772 1.18482 11.5962 2.40381C12.8152 3.62279 13.5 5.27609 13.5 7Z" stroke="black" />
