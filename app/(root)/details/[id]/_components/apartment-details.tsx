@@ -7,6 +7,7 @@ import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { Id } from '@/convex/_generated/dataModel';
 import ImageCarousel from '@/app/(root)/_components/image-carousel';
+import BookingCard from './booking-card';
 
 type ApartmentData = {
     _id: Id<"apartments">;
@@ -95,10 +96,7 @@ const ApartmentDetails = (): JSX.Element => {
               )}
             </div>
           </div>
-          <div className="w-[300px] h-[351px] bg-white shadow-md rounded p-4 ml-10">
-            <h2 className="text-xl font-semibold mb-4">Korttitel</h2>
-            <p>Detta är innehållet i kortet. Du kan lägga till mer information här.</p>
-          </div>
+          <BookingCard />
         </div>
       </div>
     </>
