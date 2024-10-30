@@ -3,7 +3,11 @@ import { ArrowIcon } from './arrow-icon';
 import { useGuestContext } from '@/context/guest-context';
 import { useDateContext } from '@/context/date-context';
 
-const BookingCard = (): JSX.Element => {
+interface BookingCardProps {
+  pricePerNight: number;
+}
+
+const BookingCard: React.FC<BookingCardProps> = ({ pricePerNight }) => {
   const { guests } = useGuestContext();
   const { checkInDate, checkOutDate } = useDateContext();
   
@@ -17,8 +21,6 @@ const BookingCard = (): JSX.Element => {
     return 0;
   }, [checkInDate, checkOutDate]);
 
-  // Definiera pris per natt
-  const pricePerNight = 1089;
   const totalPrice = nights * pricePerNight;
 
   return (
