@@ -15,7 +15,7 @@ interface SearchBarProps {
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const { checkInDate, checkOutDate } = useDateContext(); // Använder DateContext
-  const { guests } = useGuestContext(); // Använder GuestContext
+  const { totalGuests } = useGuestContext(); // Använder GuestContext
   const [destination, setDestination] = useState('');
   const [isGuestSelectorVisible, setIsGuestSelectorVisible] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
@@ -48,7 +48,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     const dates = checkInDate && checkOutDate 
       ? `${new Date(checkInDate).toLocaleDateString("sv-SE", { day: "numeric", month: "short" })} - ${new Date(checkOutDate).toLocaleDateString("sv-SE", { day: "numeric", month: "short" })}` 
       : 'Lägg till datum';
-    onSearch(destination, dates, guests);
+    onSearch(destination, dates, totalGuests);
   };
 
   return (
@@ -84,7 +84,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           className="text-gray-500 pt-[10px] bg-transparent cursor-pointer"
           onClick={() => setIsGuestSelectorVisible(!isGuestSelectorVisible)}
         >
-          {guests > 0 ? `${guests} gäst${guests > 1 ? 'er' : ''}` : 'Lägg till gäster'}
+          {totalGuests > 0 ? `${totalGuests} gäst${totalGuests > 1 ? 'er' : ''}` : 'Lägg till gäster'}
         </p>
         {isGuestSelectorVisible && (
           <div className="absolute top-[68px] -left-[155px] bg-white rounded shadow-md z-50">

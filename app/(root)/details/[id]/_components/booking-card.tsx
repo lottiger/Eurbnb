@@ -11,7 +11,7 @@ interface BookingCardProps {
 }
 
 const BookingCard: React.FC<BookingCardProps> = ({ pricePerNight }) => {
-  const { guests } = useGuestContext();
+  const { totalGuests } = useGuestContext();
   const { checkInDate, checkOutDate } = useDateContext();
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [isGuestSelectorVisible, setIsGuestSelectorVisible] = useState(false);
@@ -76,7 +76,7 @@ const BookingCard: React.FC<BookingCardProps> = ({ pricePerNight }) => {
           <div className="flex justify-between border-x border-b w-[244px] py-1 px-2 rounded-b" onClick={() => setIsGuestSelectorVisible(!isGuestSelectorVisible)}>
             <div>
               <p>Antal</p>
-              <p>{guests > 0 ? `${guests} gäster` : 'Välj antal'}</p>
+              <p>{totalGuests > 0 ? `${totalGuests} gäster` : 'Välj antal'}</p>
             </div>
             <div className="flex items-center">
               <ArrowIcon />

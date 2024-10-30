@@ -1,20 +1,30 @@
-// guest-context.tsx
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface GuestContextProps {
-  guests: number;
-  updateGuests: (guests: number) => void;
+  adults: number;
+  numChildren: number;
+  infants: number;
+  totalGuests: number;
+  updateAdults: (adults: number) => void;
+  updateChildren: (numChildren: number) => void;
+  updateInfants: (infants: number) => void;
 }
 
 const GuestContext = createContext<GuestContextProps | undefined>(undefined);
 
 export const GuestProvider = ({ children }: { children: ReactNode }): JSX.Element => {
-  const [guests, setGuests] = useState<number>(0);
+  const [adults, setAdults] = useState<number>(0);
+  const [numChildren, setChildren] = useState<number>(0);
+  const [infants, setInfants] = useState<number>(0);
 
-  const updateGuests = (newGuests: number) => setGuests(newGuests);
+  const updateAdults = (newAdults: number) => setAdults(newAdults);
+  const updateChildren = (newChildren: number) => setChildren(newChildren);
+  const updateInfants = (newInfants: number) => setInfants(newInfants);
+
+  const totalGuests = adults + numChildren + infants;
 
   return (
-    <GuestContext.Provider value={{ guests, updateGuests }}>
+    <GuestContext.Provider value={{ adults, numChildren, infants, totalGuests, updateAdults, updateChildren, updateInfants }}>
       {children}
     </GuestContext.Provider>
   );
