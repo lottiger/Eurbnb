@@ -4,22 +4,26 @@ import { useGuestContext } from '@/context/guest-context';
 import { useDateContext } from '@/context/date-context';
 import DatePicker from '@/app/(root)/_components/date-picker';
 import GuestSelector from '@/app/(root)/_components/guest-selector';
-
+import { useRouter } from 'next/navigation';
 
 interface BookingCardProps {
   pricePerNight: number;
+  title: string;
+  beds: number;
+  bedrooms: number;
+  id: string;
+  imageUrl: string; // Lägg till imageUrl här
 }
 
-const BookingCard: React.FC<BookingCardProps> = ({ pricePerNight }) => {
+const BookingCard: React.FC<BookingCardProps> = ({ pricePerNight, title, beds, bedrooms, id, imageUrl }) => {
   const { totalGuests } = useGuestContext();
   const { checkInDate, checkOutDate } = useDateContext();
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [isGuestSelectorVisible, setIsGuestSelectorVisible] = useState(false);
-
   const datePickerRef = useRef<HTMLDivElement>(null);
   const guestSelectorRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
-  // Stänger DatePicker och GuestSelector när man klickar utanför dem
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
@@ -34,7 +38,6 @@ const BookingCard: React.FC<BookingCardProps> = ({ pricePerNight }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Beräkna antal nätter mellan incheckning och utcheckning
   const nights = useMemo(() => {
     if (checkInDate && checkOutDate) {
       const start = new Date(checkInDate);
@@ -46,11 +49,10 @@ const BookingCard: React.FC<BookingCardProps> = ({ pricePerNight }) => {
 
   const totalPrice = nights * pricePerNight;
 
-  // Hanterar formsubmission
   const handleReservation = (event: React.FormEvent) => {
     event.preventDefault();
-    // Lägg till bokningslogik här
-    console.log("Bokning genomförd!");
+
+    router.push(`/details/${id}/summary?checkInDate=${checkInDate}&checkOutDate=${checkOutDate}&totalGuests=${totalGuests}&pricePerNight=${pricePerNight}&totalPrice=${totalPrice}&title=${title}&beds=${beds}&bedrooms=${bedrooms}&imageUrl=${encodeURIComponent(imageUrl)}`);
   };
 
   return (

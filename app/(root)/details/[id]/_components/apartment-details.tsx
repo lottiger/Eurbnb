@@ -96,7 +96,13 @@ const ApartmentDetails = (): JSX.Element => {
               )}
             </div>
           </div>
-          <BookingCard pricePerNight={apartment.price}/>
+          <BookingCard 
+           pricePerNight={apartment.price} 
+           title={apartment.title} 
+           beds={apartment.beds} 
+           bedrooms={apartment.bedrooms} 
+           id={apartment._id}
+           imageUrl={apartment.images[0]} />
         </div>
       </div>
     </>
