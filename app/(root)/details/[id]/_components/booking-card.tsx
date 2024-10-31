@@ -13,6 +13,7 @@ interface BookingCardProps {
   bedrooms: number;
   id: string;
   imageUrl: string; // Lägg till imageUrl här
+  nights: number;
 }
 
 const BookingCard: React.FC<BookingCardProps> = ({ pricePerNight, title, beds, bedrooms, id, imageUrl }) => {
@@ -52,7 +53,7 @@ const BookingCard: React.FC<BookingCardProps> = ({ pricePerNight, title, beds, b
   const handleReservation = (event: React.FormEvent) => {
     event.preventDefault();
 
-    router.push(`/details/${id}/summary?checkInDate=${checkInDate}&checkOutDate=${checkOutDate}&totalGuests=${totalGuests}&pricePerNight=${pricePerNight}&totalPrice=${totalPrice}&title=${title}&beds=${beds}&bedrooms=${bedrooms}&imageUrl=${encodeURIComponent(imageUrl)}`);
+    router.push(`/details/${id}/summary?checkInDate=${checkInDate}&checkOutDate=${checkOutDate}&totalGuests=${totalGuests}&pricePerNight=${pricePerNight}&totalPrice=${totalPrice}&title=${title}&beds=${beds}&bedrooms=${bedrooms}&nights=${nights}&imageUrl=${encodeURIComponent(imageUrl)}`);
   };
 
   return (
@@ -103,7 +104,7 @@ const BookingCard: React.FC<BookingCardProps> = ({ pricePerNight, title, beds, b
               />
               <p className="mt-4">Totalt: {totalPrice} kr</p>
               <p className="text-[11px] font-normal text-gray-500">inklusive skatter och avgifter</p>
-              <button type="submit" className="mt-4 bg-[#1E3E62] text-white rounded-md py-3 px-20 text-[16px]">
+              <button type="submit" className="mt-4 bg-[#1E3E62] text-white rounded-md py-3 px-20 text-[16px] hover:bg-[#2A4F7A]">
                 Reservera
               </button>
             </div>
