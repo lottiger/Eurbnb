@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '@clerk/nextjs';
-import { useSearchParams, useParams } from 'next/navigation';
+import { useSearchParams, useParams, useRouter } from 'next/navigation';
 import { api } from '@/convex/_generated/api';
 import { useMutation } from 'convex/react';
 import { Id } from '@/convex/_generated/dataModel';
@@ -41,6 +41,7 @@ const PaymentForm = (): JSX.Element => {
   const totalPrice = Number(searchParams.get('totalPrice') || 0);
 
   const { isSignedIn, userId } = useAuth();
+  const router = useRouter();
 
   const createBookingMutation = useMutation(api.functions.bookings.createBooking);
 
@@ -65,10 +66,10 @@ const PaymentForm = (): JSX.Element => {
         isAnonymous: !isSignedIn,
       });
 
-      alert('Bokningen genomförd!');
+      router.push('/details/[id]/confirmation');
     } catch (error) {
       console.error('Bokningen misslyckades:', error);
-      alert('Ett fel inträffade, försök igen.');
+      
     }
   };
 
