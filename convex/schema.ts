@@ -17,13 +17,25 @@ const schema = defineSchema({
     amenities: v.optional(v.array(v.string())), // Array av bekvämligheter, valbart och av typen array av strängar
     hostName: v.optional(v.string()), // Värdens namn, valbart och av typen sträng
   }),
-  
+
   favorites: defineTable({
     userId: v.string(), // Clerk user ID
     apartmentId: v.id('apartments'), // Referens till lägenheten
   }),
 
-  
+  bookings: defineTable({
+    userId: v.optional(v.string()), // Referens till inloggad användare (om inloggad), annars tom
+    apartmentId: v.id('apartments'), // Referens till lägenheten som bokas
+    title: v.string(), // Titel på lägenheten
+    checkInDate: v.string(), // Incheckningsdatum
+    checkOutDate: v.string(), // Utcheckningsdatum
+    totalGuests: v.number(), // Antal gäster
+    pricePerNight: v.number(), // Pris per natt
+    totalPrice: v.number(), // Totalt pris för vistelsen
+    bookingDate: v.string(), // Datum då bokningen gjordes
+    isAnonymous: v.boolean(), // Indikerar om bokningen är anonym
+  }),
+
 });
 
 export default schema;

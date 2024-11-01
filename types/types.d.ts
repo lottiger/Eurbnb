@@ -65,3 +65,30 @@ type FavoriteData = {
   apartmentId: Id<"apartments">; // Favoritlägenhetens ID
 };
 
+// Typ för att skapa en ny bokning
+type BookingInput = {
+  userId?: string; // Optional för anonym bokning
+  apartmentId: Id<"apartments">;
+  title: string;
+  checkInDate: string;
+  checkOutDate: string;
+  totalGuests: number;
+  pricePerNight: number;
+  totalPrice: number;
+  isAnonymous: boolean;
+};
+
+// Typ för bokningsdata efter hämtning från databasen
+type BookingData = {
+  _id: Id<"bookings">; // Convex-ID för bokningen
+  userId?: string; // Optional om bokningen är anonym
+  apartmentId: Id<"apartments">;
+  title: string;
+  checkInDate: string;
+  checkOutDate: string;
+  totalGuests: number;
+  pricePerNight: number;
+  totalPrice: number;
+  bookingDate: string; // Datum för när bokningen skapades
+  isAnonymous: boolean;
+};
