@@ -6,7 +6,7 @@ function MyBookingsPage(): JSX.Element {
   return (
     <>
     <HeaderWithoutSearch />
-    <h1 className='text-[40px] font-semibold'>Bokningshistorik</h1>
+    <h1 className='text-[40px] font-semibold flex justify-center my-20'>Bokningshistorik</h1>
     <BookingsList />
     </>
   )

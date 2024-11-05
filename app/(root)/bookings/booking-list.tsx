@@ -32,7 +32,7 @@ const BookingsList: React.FC = () => {
 
           return (
             <div key={booking._id.toString()} className='gap-4 mx-20'>
-              <div className='mb-4 flex'>
+              <div className='mb-20 flex'>
                 <div>
                   {booking.images.length > 0 ? (
                     <img src={booking.images[0]} alt="Apartment" style={{ width: '586px', height: '258px', objectFit: 'cover'}} className='rounded-lg' />
@@ -40,7 +40,7 @@ const BookingsList: React.FC = () => {
                     <div style={{ width: '100px', height: '100px', backgroundColor: '#f0f0f0' }}>No Image</div>
                   )}
                 </div>
-                <div className='px-4 flex-1'>
+                <div className='px-4 flex-1 text-[12px]'>
                   <div className='flex justify-between'>
                     <h2 className='font-semibold'>{booking.title}</h2>
                     <p>{booking.totalGuests} gäster</p>
@@ -53,16 +53,28 @@ const BookingsList: React.FC = () => {
                     <p>{booking.beds} sängar</p>
                   </div>
                   <div>
-                    <p>Datum</p>
+                    <p className='font-medium pt-2'>Datum</p>
                     <p>{formattedCheckInDate} - {formattedCheckOutDate}</p>
                   </div>
-                  <div className='my-2'>
-                    <p>Städavgift: {cleaningFee} kr</p>
-                    <p>EurBNB serviceavgift: {serviceFee} kr</p>
+                  <div className='mt-28 pb-2'>
+                    <div className='flex justify-between pb-2'>
+                    <p className='underline'>Städavgift:</p>
+                    <p>{cleaningFee} kr</p>
+                    </div>
+                    <div className='flex justify-between'>
+                    <p className='underline'>EurBNB serviceavgift:</p>
+                    <p>{serviceFee} kr</p>
+                    </div>
                   </div>
-                  <p>{Math.round(booking.pricePerNight)} kr per natt</p>
-                  <p>Antal nätter: {nights}</p>
+                  <div className='flex justify-between'>
+                    <div className='flex gap-1'>
+                  <p>{Math.round(booking.pricePerNight)} kr</p>
+                  <p>x {nights} nätter inklusive avgifter</p>
+                  </div>
+                  <div>
                   <p>Totalt: {Math.round(booking.totalPrice)} kr</p> {/* Avrundat totalpris */}
+                  </div>
+                  </div>
                 </div>
               </div>
             </div>
