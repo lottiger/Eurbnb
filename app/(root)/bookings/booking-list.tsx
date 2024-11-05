@@ -1,54 +1,73 @@
-'use client'
+'use client';
 import React from 'react';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-
-// type BookingData = {
-//     _id: Id<"bookings">; // Convex-ID för bokningen
-//     userId?: string; // Optional om bokningen är anonym
-//     apartmentId: Id<"apartments">;
-//     title: string;
-//     checkInDate: string;
-//     checkOutDate: string;
-//     totalGuests: number;
-//     pricePerNight: number;
-//     totalPrice: number;
-//     bookingDate: string; // Datum för när bokningen skapades
-//     isAnonymous: boolean;
-//   };
-  
 
 const BookingsList: React.FC = () => {
   // Använd `useQuery` för att hämta bokningsdata
   const bookings = useQuery(api.functions.bookings.getBookings) || []; // Fallback till tom array om `null`
 
+  // Definiera procentsatser för avgifterna
+  const serviceFeePercentage = 0.10; // 10%
+  const cleaningFeePercentage = 0.05; // 5%
+
   return (
     <div>
       {bookings.length > 0 ? (
-        bookings.map((booking) => (
-          <div key={booking._id.toString()} style={{ border: '1px solid #ccc', padding: '16px', margin: '16px 0' }}>
-            <div>
-              {booking.images.length > 0 ? (
-                <img src={booking.images[0]} alt="Apartment" style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
-              ) : (
-                <div style={{ width: '100px', height: '100px', backgroundColor: '#f0f0f0' }}>No Image</div>
-              )}
+        bookings.map((booking) => {
+          // Formatera in- och utcheckningsdatum för varje bokning
+          const formattedCheckInDate = booking.checkInDate
+            ? new Date(booking.checkInDate).toLocaleDateString('sv-SE', { day: 'numeric', month: 'long' })
+            : '';
+          const formattedCheckOutDate = booking.checkOutDate
+            ? new Date(booking.checkOutDate).toLocaleDateString('sv-SE', { day: 'numeric', month: 'long' })
+            : '';
+
+          // Beräkna antal nätter
+          const nights = (new Date(booking.checkOutDate).getTime() - new Date(booking.checkInDate).getTime()) / (1000 * 60 * 60 * 24);
+
+          // Dynamiska avgifter, avrundade till heltal
+          const serviceFee = Math.round(booking.totalPrice * serviceFeePercentage);
+          const cleaningFee = Math.round(booking.totalPrice * cleaningFeePercentage);
+
+          return (
+            <div key={booking._id.toString()} className='gap-4 mx-20'>
+              <div className='mb-4 flex'>
+                <div>
+                  {booking.images.length > 0 ? (
+                    <img src={booking.images[0]} alt="Apartment" style={{ width: '586px', height: '258px', objectFit: 'cover'}} className='rounded-lg' />
+                  ) : (
+                    <div style={{ width: '100px', height: '100px', backgroundColor: '#f0f0f0' }}>No Image</div>
+                  )}
+                </div>
+                <div className='px-4 flex-1'>
+                  <div className='flex justify-between'>
+                    <h2 className='font-semibold'>{booking.title}</h2>
+                    <p>{booking.totalGuests} gäster</p>
+                  </div>
+                  <div className='flex items-center gap-2 text-gray-600'>
+                    <p>{booking.bedrooms} sovrum</p>
+                    <svg width="6" height="5" viewBox="0 0 6 5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="2.5271" cy="2.5" r="2.5" fill="black" fillOpacity="0.8" />
+                    </svg>
+                    <p>{booking.beds} sängar</p>
+                  </div>
+                  <div>
+                    <p>Datum</p>
+                    <p>{formattedCheckInDate} - {formattedCheckOutDate}</p>
+                  </div>
+                  <div className='my-2'>
+                    <p>Städavgift: {cleaningFee} kr</p>
+                    <p>EurBNB serviceavgift: {serviceFee} kr</p>
+                  </div>
+                  <p>{Math.round(booking.pricePerNight)} kr per natt</p>
+                  <p>Antal nätter: {nights}</p>
+                  <p>Totalt: {Math.round(booking.totalPrice)} kr</p> {/* Avrundat totalpris */}
+                </div>
+              </div>
             </div>
-            <div>
-              <h1>{booking.title}</h1>
-              <p>Antal gäster: {booking.totalGuests}</p>
-            </div>
-            <div>
-              <p>Datum</p>
-              <p>{booking.checkInDate} - {booking.checkOutDate}</p>
-            </div>
-            <div>
-              <p>{booking.pricePerNight} kr / natt</p>
-              <p>{(new Date(booking.checkOutDate).getTime() - new Date(booking.checkInDate).getTime()) / (1000 * 60 * 60 * 24)} nätter</p>
-              <p>Totalpris: {booking.totalPrice} kr</p>
-            </div>
-          </div>
-        ))
+          );
+        })
       ) : (
         <p>Inga bokningar att visa.</p>
       )}

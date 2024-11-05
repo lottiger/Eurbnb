@@ -1,5 +1,5 @@
 'use client';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useSearchParams } from 'next/navigation';
 
 const SummaryCard = (): JSX.Element => {
@@ -24,12 +24,18 @@ const SummaryCard = (): JSX.Element => {
     ? new Date(checkOutDate).toLocaleDateString('sv-SE', { day: 'numeric', month: 'long' })
     : '';
 
+  // Konvertera pris och antal nätter till nummer och räkna ut avgifter
+  const parsedTotalPrice = totalPrice ? parseFloat(totalPrice) : 0;
+  const cleaningFee = Math.round(parsedTotalPrice * 0.05); // 5% städavgift
+  const serviceFee = Math.round(parsedTotalPrice * 0.10); // 10% serviceavgift
+  const finalTotal = parsedTotalPrice + cleaningFee + serviceFee; // Totalt pris med avgifter
+
   return (
     <div className='flex justify-center mt-24'>
       <div className=''>
         <h1 className='font-semibold text-[40px] text-center mb-6'>Skicka bokningsförfrågan</h1>
         <div className='border rounded-lg border-gray-500 p-4 text-[12px] inline-flex justify-center'>
-          {imageUrl && <img src={imageUrl} alt="Lägenhetsbild" className=" w-[239px] h-[187px] object-cover rounded-lg" />}
+          {imageUrl && <img src={imageUrl} alt="Lägenhetsbild" className="w-[239px] h-[187px] object-cover rounded-lg" />}
           <div className='px-4'>
             <h2 className='font-semibold'>{title}</h2>
             <div className='flex items-center gap-2 text-gray-600'>
@@ -46,7 +52,11 @@ const SummaryCard = (): JSX.Element => {
             </div>
             <p>{pricePerNight} kr per natt</p>
             <p>Antal nätter: {nights}</p>
-            <p>Totalt: {totalPrice} kr</p>
+            <div className='my-2'>
+              <p>Städavgift: {cleaningFee} kr</p>
+              <p>EurBNB serviceavgift: {serviceFee} kr</p>
+            </div>
+            <p>Totalt: {finalTotal} kr</p> {/* Totalt pris inklusive avgifter */}
           </div>
         </div>
       </div>
