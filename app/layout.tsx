@@ -5,9 +5,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Footer from "./(root)/_components/footer";
 
-
-
-const inter = Inter ({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Eurbnb central and simple",
@@ -22,13 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head />
-      <body>
-        
+      <body className="flex flex-col min-h-screen">
         <ClientProviders>
-          {children}
+          <main className="flex-grow">
+            {children}
+          </main>
           <Footer />
         </ClientProviders>
-        
       </body>
     </html>
   );

@@ -1,8 +1,22 @@
+'use client'
 import React from 'react'
 import CheckIcon from './check-icon'
 import HeaderWithoutSearch from '@/app/(root)/_components/header-without-search'
+import { useRouter } from 'next/navigation'
 
 const Confirm = ():JSX.Element => {
+
+  const router= useRouter()
+  const handleHomeClick=()=>{
+    router.push('/')
+
+  }
+
+  const handleBookingClick=()=>{
+    router.push('/bookings')
+  }
+
+ 
   return (
     <>
     <HeaderWithoutSearch />
@@ -15,10 +29,10 @@ const Confirm = ():JSX.Element => {
         </div>
         </div>
     <div className='my-10 flex items-center justify-center gap-6'>
-    <button className="mt-4 bg-[#1E3E62] text-white rounded-md py-3 px-16 text-[16px] hover:bg-[#2A4F7A]">
+    <button onClick={handleHomeClick} className="mt-4 bg-[#1E3E62] text-white rounded-md py-3 px-16 text-[16px] hover:bg-[#2A4F7A]">
                 Tillbaka till startsidan
               </button>
-              <button className="mt-4 bg-[#1E3E62] text-white rounded-md py-3 px-20 text-[16px] hover:bg-[#2A4F7A]">
+              <button onClick={handleBookingClick} className="mt-4 bg-[#1E3E62] text-white rounded-md py-3 px-20 text-[16px] hover:bg-[#2A4F7A]">
                 Mina bokningar
               </button>
     </div>
