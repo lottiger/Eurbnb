@@ -13,7 +13,7 @@ interface BookingCardProps {
   bedrooms: number;
   id: string;
   imageUrl: string; // Lägg till imageUrl här
-  nights: number;
+  nights?: number;
 }
 
 const BookingCard: React.FC<BookingCardProps> = ({ pricePerNight, title, beds, bedrooms, id, imageUrl }) => {

@@ -62,11 +62,11 @@ const SummaryCard = (): JSX.Element => {
             </div>
             <div className="my-4">
               <div className="flex justify-between pb-2">
-                <p className="underline">Städavgift:</p>
+                <p className="underline">Städavgift</p>
                 <p>{cleaningFee} kr</p>
               </div>
               <div className="flex justify-between">
-                <p className="underline">EurBNB serviceavgift:</p>
+                <p className="underline">EurBNB serviceavgift</p>
                 <p>{serviceFee} kr</p>
               </div>
             </div>
