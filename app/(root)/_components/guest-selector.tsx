@@ -76,9 +76,9 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({ onClose }) => {
         </div>
       </div>
 
-      <button onClick={onClose} className="text-blue-500 mt-4">
+      {/* <button onClick={onClose} className="text-blue-500 mt-4">
         Stäng
-      </button>
+      </button> */}
     </div>
   );
 };

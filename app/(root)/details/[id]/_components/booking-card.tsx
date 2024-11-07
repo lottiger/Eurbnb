@@ -1,3 +1,4 @@
+// BookingCard.tsx
 import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { ArrowIcon } from './arrow-icon';
 import { useGuestContext } from '@/context/guest-context';
@@ -12,7 +13,7 @@ interface BookingCardProps {
   beds: number;
   bedrooms: number;
   id: string;
-  imageUrl: string; // Lägg till imageUrl här
+  imageUrl: string; 
   nights?: number;
 }
 
@@ -57,7 +58,7 @@ const BookingCard: React.FC<BookingCardProps> = ({ pricePerNight, title, beds, b
   };
 
   return (
-    <div className="w-[300px] h-[351px] shadow-md p-4 ml-10 flex justify-center">
+    <div className="w-[300px] h-[351px] shadow-md p-4 flex justify-center">
       <form onSubmit={handleReservation}>
         <div className="text-[12px] font-semibold mt-4">
           <div className="flex" onClick={() => setIsDatePickerVisible(!isDatePickerVisible)}>
@@ -71,7 +72,11 @@ const BookingCard: React.FC<BookingCardProps> = ({ pricePerNight, title, beds, b
             </div>
           </div>
           {isDatePickerVisible && (
-            <div ref={datePickerRef} className="absolute z-50 bg-white rounded shadow-md mt-2">
+            <div
+              ref={datePickerRef}
+              className="absolute z-50 bg-white rounded shadow-md mt-2"
+              style={{ right: '20px' }}
+            >
               <DatePicker />
             </div>
           )}
@@ -86,7 +91,9 @@ const BookingCard: React.FC<BookingCardProps> = ({ pricePerNight, title, beds, b
             </div>
           </div>
           {isGuestSelectorVisible && (
-            <div ref={guestSelectorRef} className="absolute z-50 bg-white rounded shadow-md mt-2">
+            <div ref={guestSelectorRef} className="absolute z-50 bg-white rounded shadow-md mt-2"
+           
+            >
               <GuestSelector onClose={() => setIsGuestSelectorVisible(false)} />
             </div>
           )}

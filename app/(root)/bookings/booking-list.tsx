@@ -3,7 +3,7 @@ import React from 'react';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 
-const BookingsList: React.FC = () => {
+const BookingsList= (): JSX.Element => {
   // Använd `useQuery` för att hämta bokningsdata
   const bookings = useQuery(api.functions.bookings.getBookings) || []; // Fallback till tom array om `null`
 
@@ -31,7 +31,7 @@ const BookingsList: React.FC = () => {
           const cleaningFee = Math.round(booking.totalPrice * cleaningFeePercentage);
 
           return (
-            <div key={booking._id.toString()} className="mb-8 md:mb-10 flex flex-col md:flex-row gap-4 items-start border-b pb-4">
+            <div key={booking._id.toString()} className="mb-8 md:mb-10 flex flex-col md:flex-row gap-4 items-start pb-10">
               <div className="w-full md:w-[50%] lg:w-[40%] flex-shrink-0">
                 {booking.images.length > 0 ? (
                   <img src={booking.images[0]} alt="Apartment" className="w-full h-[200px] md:h-[250px] object-cover rounded-lg" />

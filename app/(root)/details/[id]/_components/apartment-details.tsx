@@ -1,5 +1,4 @@
-// ApartmentDetails.tsx
-'use client'
+'use client';
 
 import HeaderWithoutSearch from '@/app/(root)/_components/header-without-search';
 import React from 'react';
@@ -11,20 +10,20 @@ import ImageCarousel from '@/app/(root)/_components/image-carousel';
 import BookingCard from './booking-card';
 
 type ApartmentData = {
-    _id: Id<"apartments">;
-    title: string;
-    description: string;
-    bedrooms: number;
-    beds: number;
-    price: number;
-    images: string[];
-    country: string;
-    city: string;
-    category?: 'offer' | 'popular' | null;
-    createdAt?: Date;
-    rating?: number;
-    amenities?: string[];
-    hostName?: string;
+  _id: Id<"apartments">;
+  title: string;
+  description: string;
+  bedrooms: number;
+  beds: number;
+  price: number;
+  images: string[];
+  country: string;
+  city: string;
+  category?: 'offer' | 'popular' | null;
+  createdAt?: Date;
+  rating?: number;
+  amenities?: string[];
+  hostName?: string;
 };
 
 const ApartmentDetails = (): JSX.Element => {
@@ -69,7 +68,7 @@ const ApartmentDetails = (): JSX.Element => {
         <div className="mb-6">
           <ImageCarousel images={apartment.images} size="large" />
         </div>
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-8 items-center lg:items-start justify-center lg:justify-between">
           <div className="w-full lg:w-2/3">
             <p className="font-semibold text-lg">Din värd: {apartment.hostName ?? 'Okänd värd'}</p>
             <div className="flex items-center gap-2 text-gray-600 mb-4">
@@ -94,7 +93,7 @@ const ApartmentDetails = (): JSX.Element => {
               )}
             </div>
           </div>
-          <div className="w-full lg:w-1/3">
+          <div className="w-full lg:w-1/3 flex justify-center lg:justify-end">
             <BookingCard 
               pricePerNight={apartment.price} 
               title={apartment.title} 
