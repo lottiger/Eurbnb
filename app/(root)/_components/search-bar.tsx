@@ -52,9 +52,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   return (
-    <form onSubmit={handleSearch} className='shadow-md rounded-[50px] flex py-[11px] px-[34px] text-[14px] items-center'>
-      <div className='border-r border-[#E4E4E7] px-[25px] relative'>
-        <h2>Vart</h2>
+    <form onSubmit={handleSearch} className='shadow-md rounded-[50px] flex py-[11px] pr-[34px] text-[14px] items-center'>
+      <div className='border-r border-[#E4E4E7] pl-[30px] relative'>
+        <h2 className="">Vart</h2>
         {allApartments && (
           <DestinationSearch
             apartments={allApartments}
@@ -65,7 +65,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       <div className='border-r border-[#E4E4E7] px-[25px] relative' ref={datePickerRef}>
         <h2>När</h2>
         <p
-          className="text-gray-500 pt-[10px] bg-transparent cursor-pointer"
+          className="text-gray-400 pt-[10px] bg-transparent cursor-pointer"
           onClick={() => setIsDatePickerVisible(!isDatePickerVisible)}
         >
           {checkInDate && checkOutDate 
@@ -81,7 +81,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       <div className="relative px-[25px]" ref={guestSelectorRef}>
         <h2>Antal</h2>
         <p
-          className="text-gray-500 pt-[10px] bg-transparent cursor-pointer"
+          className="text-gray-400 pt-[10px] bg-transparent cursor-pointer"
           onClick={() => setIsGuestSelectorVisible(!isGuestSelectorVisible)}
         >
           {totalGuests > 0 ? `${totalGuests} gäst${totalGuests > 1 ? 'er' : ''}` : 'Lägg till gäster'}

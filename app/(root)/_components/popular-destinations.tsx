@@ -35,7 +35,7 @@ const PopularDestinations: React.FC = () => {
 
   return (
     <>
-      <h3 className="flex justify-center text-[40px] font-[600] mb-[36px] mt-[40px]">Populära destinationer</h3>
+      <h3 className="flex justify-center text-center text-[40px] font-[600] mb-[36px] mt-[40px]">Populära destinationer</h3>
       <div className="flex flex-wrap gap-[86px] justify-center mx-36">
         {popularApartments.map(apartment => (
           <ApartmentCard

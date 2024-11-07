@@ -34,10 +34,10 @@ const DestinationSearch: React.FC<DestinationSearchProps> = ({ apartments, onSel
     <div className="relative">
       <input
         type="text"
-        placeholder="Sök destination"
+        placeholder="Sök destination "
         value={searchTerm}
         onChange={handleChange}
-        className="text-gray-500 pt-[10px] bg-transparent focus:outline-none"
+        className="text-gray-500 pt-[10px] bg-transparent focus:outline-none w-32"
       />
       {showSuggestions && (
         <ul className="absolute top-full left-0 right-0 bg-white border rounded shadow-lg z-10">
