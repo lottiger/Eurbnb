@@ -1,0 +1,8 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+  base = "/"
+  # Lägg till eventuella andra inställningar om projektet ligger i en undermapp
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
