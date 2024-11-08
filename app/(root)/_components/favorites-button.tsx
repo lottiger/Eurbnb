@@ -1,7 +1,5 @@
 'use client';
 
-import React, { useState } from 'react';
-
 interface FavoriteButtonProps {
   isFavorited: boolean;
   onToggle: () => void; // Callback-funktion för att hantera favoritlogiken

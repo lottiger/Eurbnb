@@ -1,5 +1,5 @@
 // DestinationSearch.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ApartmentData } from '@/types/types';
 
 interface DestinationSearchProps {

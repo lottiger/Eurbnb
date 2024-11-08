@@ -62,7 +62,7 @@ const [apartment, setApartment] = useState<{
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    let images: Id<"_storage">[] = [];
+    const images: Id<"_storage">[] = [];
     try {
       if (selectedImages.length > 0) {
         for (const image of selectedImages) {

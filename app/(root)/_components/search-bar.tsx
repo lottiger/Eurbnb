@@ -73,7 +73,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
             : 'Lägg till datum'}
         </p>
         {isDatePickerVisible && (
-          <div className="absolute top-[68px] -left-[155px] bg-white rounded shadow-md z-50">
+          <div className="smx:absolute top-[68px] -left-[155px] bg-white rounded shadow-md z-50">
             <DatePicker />
           </div>
         )}

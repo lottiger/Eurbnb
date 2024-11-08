@@ -7,7 +7,7 @@ interface GuestSelectorProps {
   onClose: () => void; // Prop för att stänga GuestSelector
 }
 
-const GuestSelector: React.FC<GuestSelectorProps> = ({ onClose }) => {
+const GuestSelector: React.FC<GuestSelectorProps> = () => {
   const { adults, numChildren, infants, updateAdults, updateChildren, updateInfants, totalGuests } = useGuestContext();
   const maxGuests = 10;
 

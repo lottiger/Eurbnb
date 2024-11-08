@@ -1,4 +1,3 @@
-// components/PaymentForm.tsx
 'use client';
 
 import React, { useState } from 'react';
@@ -25,6 +24,9 @@ const PaymentForm = (): JSX.Element => {
 
   const params = useParams();
   const searchParams = useSearchParams();
+  const { isSignedIn, userId } = useAuth(); // useAuth moved here
+  const router = useRouter();
+  const createBookingMutation = useMutation(api.functions.bookings.createBooking);
 
   const apartmentId = typeof params.id === 'string' ? (params.id as Id<'apartments'>) : null;
 
@@ -39,11 +41,6 @@ const PaymentForm = (): JSX.Element => {
   const totalGuests = Number(searchParams.get('totalGuests') || 0);
   const pricePerNight = Number(searchParams.get('pricePerNight') || 0);
   const totalPrice = Number(searchParams.get('totalPrice') || 0);
-
-  const { isSignedIn, userId } = useAuth();
-  const router = useRouter();
-
-  const createBookingMutation = useMutation(api.functions.bookings.createBooking);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

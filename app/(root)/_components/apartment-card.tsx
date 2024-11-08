@@ -23,7 +23,7 @@ type ApartmentCardProps = {
 const ApartmentCard = ({
   apartmentId,
   title,
-  description,
+  // description,
   bedrooms,
   beds,
   price,
