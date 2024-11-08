@@ -30,7 +30,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         
         <p className="text-[16px] font-semibold">Du måste vara inloggad för att spara boendet</p>
         
-        <SignInButton mode="modal" redirectUrl="/">
+        <SignInButton mode="modal">
           <button className="mt-4 text-[16px] px-[20px] w-[192px] h-[46px] bg-[#1E3E62] text-white rounded-lg hover:bg-[#2A4F7A]">
             Logga in
           </button>
