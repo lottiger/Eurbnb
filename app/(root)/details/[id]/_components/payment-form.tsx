@@ -6,6 +6,8 @@ import { useSearchParams, useParams, useRouter } from 'next/navigation';
 import { api } from '@/convex/_generated/api';
 import { useMutation } from 'convex/react';
 import { Id } from '@/convex/_generated/dataModel';
+import { useDateContext } from '@/context/date-context';
+import { useGuestContext } from '@/context/guest-context';
 
 const PaymentForm = (): JSX.Element => {
   const [formData, setFormData] = useState({
@@ -27,6 +29,8 @@ const PaymentForm = (): JSX.Element => {
   const { isSignedIn, userId } = useAuth(); // useAuth moved here
   const router = useRouter();
   const createBookingMutation = useMutation(api.functions.bookings.createBooking);
+  const { resetDates } = useDateContext();
+  const { resetGuests } = useGuestContext(); // useGuestContext moved here
 
   const apartmentId = typeof params.id === 'string' ? (params.id as Id<'apartments'>) : null;
 
@@ -83,6 +87,8 @@ const PaymentForm = (): JSX.Element => {
         isAnonymous: !isSignedIn,
       });
 
+      resetDates(); // Återställ datum efter bokning
+      resetGuests(); // Återställ gäster efter bokning
       router.push('/details/[id]/confirmation');
     } catch (error) {
       console.error('Bokningen misslyckades:', error);

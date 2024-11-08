@@ -1,4 +1,3 @@
-// date-context.tsx
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface DateContextProps {
@@ -6,6 +5,7 @@ interface DateContextProps {
   checkOutDate: string | null;
   updateCheckInDate: (date: string | null) => void;
   updateCheckOutDate: (date: string | null) => void;
+  resetDates: () => void; // Lägg till resetDates till gränssnittet
 }
 
 const DateContext = createContext<DateContextProps | undefined>(undefined);
@@ -16,9 +16,15 @@ export const DateProvider = ({ children }: { children: ReactNode }): JSX.Element
 
   const updateCheckInDate = (date: string | null) => setCheckInDate(date);
   const updateCheckOutDate = (date: string | null) => setCheckOutDate(date);
+  
+  // Funktion för att återställa datumen
+  const resetDates = () => {
+    setCheckInDate(null);
+    setCheckOutDate(null);
+  };
 
   return (
-    <DateContext.Provider value={{ checkInDate, checkOutDate, updateCheckInDate, updateCheckOutDate }}>
+    <DateContext.Provider value={{ checkInDate, checkOutDate, updateCheckInDate, updateCheckOutDate, resetDates }}>
       {children}
     </DateContext.Provider>
   );

@@ -1,19 +1,13 @@
+// Confirm.tsx
 'use client';
-import React, { useEffect } from 'react';
+import React from 'react';
 import CheckIcon from './check-icon';
 import HeaderWithoutSearch from '@/app/(root)/_components/header-without-search';
 import { useRouter } from 'next/navigation';
-import { useSearchContext } from '@/context/search-context';
-
 
 const Confirm = (): JSX.Element => {
   const router = useRouter();
-  const { resetSearchData } = useSearchContext(); // Hämta reset-funktionen
-
-  useEffect(() => {
-    resetSearchData(); // Töm datum och antal när komponenten mountas
-  }, [resetSearchData]);
-
+  
   const handleHomeClick = () => {
     router.push('/');
   };

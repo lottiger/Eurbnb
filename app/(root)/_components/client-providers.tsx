@@ -6,7 +6,6 @@ import {  ConvexReactClient } from "convex/react";
 import { FavoritesProvider } from "@/context/favorites-context";
 import { DateProvider } from "@/context/date-context";
 import { GuestProvider } from "@/context/guest-context";
-import { SearchProvider } from "@/context/search-context";
 
 
 // Kontrollera Convex URL
@@ -24,9 +23,7 @@ export function ClientProviders({ children }: { children: React.ReactNode }) {
        <FavoritesProvider>
         <DateProvider>
           <GuestProvider>
-            <SearchProvider>
         {children}
-            </SearchProvider>
         </GuestProvider>
         </DateProvider>
         </FavoritesProvider>

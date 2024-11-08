@@ -8,6 +8,7 @@ interface GuestContextProps {
   updateAdults: (adults: number) => void;
   updateChildren: (numChildren: number) => void;
   updateInfants: (infants: number) => void;
+  resetGuests: () => void; // Lägg till resetGuests till gränssnittet
 }
 
 const GuestContext = createContext<GuestContextProps | undefined>(undefined);
@@ -21,10 +22,16 @@ export const GuestProvider = ({ children }: { children: ReactNode }): JSX.Elemen
   const updateChildren = (newChildren: number) => setChildren(newChildren);
   const updateInfants = (newInfants: number) => setInfants(newInfants);
 
+  const resetGuests = () => {
+    setAdults(0);
+    setChildren(0);
+    setInfants(0);
+  };
+
   const totalGuests = adults + numChildren + infants;
 
   return (
-    <GuestContext.Provider value={{ adults, numChildren, infants, totalGuests, updateAdults, updateChildren, updateInfants }}>
+    <GuestContext.Provider value={{ adults, numChildren, infants, totalGuests, updateAdults, updateChildren, updateInfants, resetGuests }}>
       {children}
     </GuestContext.Provider>
   );
