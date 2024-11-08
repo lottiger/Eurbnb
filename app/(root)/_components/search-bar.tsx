@@ -52,8 +52,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   return (
-    <form onSubmit={handleSearch} className='shadow-md rounded-[50px] flex py-[11px] pr-[34px] text-[14px] items-center'>
-      <div className='border-r border-[#E4E4E7] pl-[30px] relative'>
+    <form onSubmit={handleSearch} className='flex flex-col smx:flex-row py-[11px] px-[34px] text-[14px] items-center shadow-md rounded-[50px]'>
+      <div className='smx:border-r border-[#E4E4E7] pl-[30px] relative'>
         <h2 className="">Vart</h2>
         {allApartments && (
           <DestinationSearch
@@ -62,7 +62,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           />
         )}
       </div>
-      <div className='border-r border-[#E4E4E7] px-[25px] relative' ref={datePickerRef}>
+      <div className='pt-2 smx:border-r border-[#E4E4E7] px-[25px] relative' ref={datePickerRef}>
         <h2>När</h2>
         <p
           className="text-gray-400 pt-[10px] bg-transparent cursor-pointer"
@@ -78,7 +78,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           </div>
         )}
       </div>
-      <div className="relative px-[25px]" ref={guestSelectorRef}>
+      <div className="pt-2 smx:relative px-[25px]" ref={guestSelectorRef}>
         <h2>Antal</h2>
         <p
           className="text-gray-400 pt-[10px] bg-transparent cursor-pointer"
@@ -87,12 +87,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           {totalGuests > 0 ? `${totalGuests} gäst${totalGuests > 1 ? 'er' : ''}` : 'Lägg till gäster'}
         </p>
         {isGuestSelectorVisible && (
-          <div className="absolute top-[68px] -left-[155px] bg-white rounded shadow-md z-50">
+          <div className="smx:absolute top-[68px] -left-[155px] bg-white rounded shadow-md z-50">
             <GuestSelector onClose={() => setIsGuestSelectorVisible(false)} />
           </div>
         )}
       </div>
+      <div className="mt-2">
      <SearchButton />
+     </div>
     </form>
   );
 };

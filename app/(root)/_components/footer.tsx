@@ -4,7 +4,7 @@ const Footer = (): JSX.Element => {
   return (
     <footer className="border-t mt-20 h-[90px] flex justify-center items-center">
      <div className="flex flex-col md:flex-row items-center justify-between w-full max-w-screen-xl mx-auto px-4 md:px-10 py-4">
-     <p className="text-[12px] md:text-[14px] text-center md:text-left">
+     <p className="text-[12px] mb-2 md:text-[14px] text-center md:text-left">
           © 2024 Eurbnb AB · Integritet · Villkor · Om oss · Företagsuppgifter
         </p>
         <svg
