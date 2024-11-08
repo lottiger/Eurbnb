@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Menu } from "lucide-react";
 import { useUser, SignInButton, SignOutButton } from "@clerk/nextjs"; // Importera Clerk hooks och komponenter
@@ -8,6 +8,7 @@ const DropdownMenu = (): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const { isSignedIn } = useUser(); // Clerk's hook to check if the user is signed in
+  const dropdownRef = useRef<HTMLUListElement | null>(null); // Skapa ref för dropdown
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -17,6 +18,20 @@ const DropdownMenu = (): JSX.Element => {
     setIsOpen(false); // Stänger dropdown-menyn när man navigerar
     router.push(path); // Använd router.push för att navigera
   };
+
+  // Hantera klick utanför dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false); // Stäng dropdown om klickat utanför
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
 
   return (
     <div className="relative inline-block text-left">
@@ -28,7 +43,7 @@ const DropdownMenu = (): JSX.Element => {
       </button>
 
       {isOpen && (
-        <ul className="absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white focus:outline-none z-10">
+        <ul ref={dropdownRef} className="absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white focus:outline-none z-10">
           <li className="pb-1 pt-4">
             <button
               onClick={() => navigateTo("/")}
@@ -55,7 +70,6 @@ const DropdownMenu = (): JSX.Element => {
           </li>
 
           {isSignedIn ? (
-            // Om användaren är inloggad, visa "Logga ut"
             <li className="pt-1 pb-4">
               <SignOutButton>
                 <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -64,7 +78,6 @@ const DropdownMenu = (): JSX.Element => {
               </SignOutButton>
             </li>
           ) : (
-            // Om användaren inte är inloggad, visa "Logga in"
             <li className="pt-1 pb-4">
               <SignInButton>
                 <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
