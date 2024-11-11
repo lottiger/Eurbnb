@@ -11,6 +11,8 @@ const BookingsList= (): JSX.Element => {
   const serviceFeePercentage = 0.10; // 10%
   const cleaningFeePercentage = 0.05; // 5%
 
+  
+
   return (
     <div className="px-4 md:px-8 lg:px-20">
       {bookings.length > 0 ? (

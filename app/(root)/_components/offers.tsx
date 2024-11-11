@@ -31,7 +31,9 @@ const Offers = (): JSX.Element => {
   const offerApartments = apartments?.filter(apartment => apartment.category === "offer");
 
   if (!offerApartments) {
-    return <div>Laddar erbjudanden...</div>;
+    return  <div className="flex justify-center items-center h-screen">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-black border-solid"></div>
+  </div>
   }
 
   return (
