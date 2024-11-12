@@ -56,7 +56,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       onSubmit={handleSearch}
       className="flex flex-col border smx:flex-row py-[11px] px-[34px] text-[14px] items-center shadow-md rounded-[50px]"
     >
-      <div className="pl-[15px] smx:border-r border-[#E4E4E7] pl-[30px] relative min-w-[150px]">
+      <div className=" px-[25px] smx:border-r border-[#E4E4E7] relative min-w-[150px]">
         <h2>Vart</h2>
         {allApartments && (
           <DestinationSearch

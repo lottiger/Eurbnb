@@ -10,11 +10,24 @@ const DestinationSearch: React.FC<DestinationSearchProps> = ({ apartments, onSel
   const [searchTerm, setSearchTerm] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  // Filtrera lägenheter baserat på sökterm
-  const filteredSuggestions = apartments.filter(apartment =>
-    apartment.country.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    apartment.city.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Skapa en Map för att filtrera unika städer och länder baserat på sökterm
+  const filteredSuggestionsMap = new Map();
+  apartments.forEach((apartment) => {
+    const city = apartment.city.toLowerCase();
+    const country = apartment.country.toLowerCase();
+    const searchTermLower = searchTerm.toLowerCase();
+
+    if (city.includes(searchTermLower)) {
+      // Lägg till staden som nyckel om söktermen matchar staden
+      filteredSuggestionsMap.set(`${city}-city`, { city: apartment.city, country: apartment.country });
+    } else if (country.includes(searchTermLower)) {
+      // Lägg till landet som nyckel om söktermen matchar landet, och staden inte matchar direkt
+      filteredSuggestionsMap.set(`${country}-country`, { city: apartment.city, country: apartment.country });
+    }
+  });
+
+  // Omvandla Map till en array av unika kombinationer av stad och land
+  const filteredSuggestions = Array.from(filteredSuggestionsMap.values());
 
   // Skapa en lista över unika länder som matchar sökordet
   const uniqueCountries = Array.from(new Set(
@@ -65,13 +78,13 @@ const DestinationSearch: React.FC<DestinationSearchProps> = ({ apartments, onSel
             </li>
           ))}
           {filteredSuggestions.length > 0 ? (
-            filteredSuggestions.map((apartment, index) => (
+            filteredSuggestions.map(({ city, country }, index) => (
               <li
                 key={`city-${index}`}
-                onClick={() => handleSelect(apartment.city)} // Välj stad för enkelhet
+                onClick={() => handleSelect(city)} // Välj stad
                 className="px-4 py-2 cursor-pointer hover:bg-gray-100"
               >
-                {apartment.city}, {apartment.country}
+                {city}, {country}
               </li>
             ))
           ) : (
