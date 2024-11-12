@@ -1,4 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
-
-export default nextConfig;
+const nextConfig = {
+    images: {
+      domains: ['quixotic-magpie-672.convex.cloud'], // Lägg till din domän här
+    },
+  };
+  
+  export default nextConfig;
+  

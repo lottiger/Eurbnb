@@ -2,6 +2,7 @@
 import React from 'react';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import Image from 'next/image';
 
 const BookingsList= (): JSX.Element => {
   // Använd `useQuery` för att hämta bokningsdata
@@ -36,7 +37,12 @@ const BookingsList= (): JSX.Element => {
             <div key={booking._id.toString()} className="mb-8 md:mb-10 flex flex-col md:flex-row gap-4 items-start pb-10">
               <div className="w-full md:w-[50%] lg:w-[40%] flex-shrink-0">
                 {booking.images.length > 0 ? (
-                  <img src={booking.images[0]} alt="Apartment" className="w-full h-[200px] md:h-[250px] object-cover rounded-lg" />
+                  <Image
+                   src={booking.images[0]} 
+                   alt="Apartment" 
+                   width={320}
+                    height={200}
+                   className="w-full h-[200px] md:h-[250px] object-cover rounded-lg" />
                 ) : (
                   <div className="w-full h-[200px] md:h-[250px] bg-gray-300 rounded-lg flex items-center justify-center text-gray-700">No Image</div>
                 )}

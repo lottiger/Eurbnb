@@ -59,6 +59,8 @@ type ApartmentData = {
   hostName?: string; // Valbart namn för värd
 };
 
+
+
 // Typ för favoritdata, t.ex. användarens favoritlägenheter
 type FavoriteData = {
   userId: string; // Användarens ID (från Clerk)

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React, { useState } from 'react';
 
 interface CarouselProps {
@@ -20,14 +21,20 @@ const ImageCarousel = ({ images, size = 'small' }: CarouselProps): JSX.Element =
     );
   };
 
-  const dimensions = size === 'large' ? 'w-[914] h-[334px]' : 'w-[200px] h-[165px]'; // Dynamiska dimensioner
+  // Dynamiska dimensioner baserat på storlek
+  const dimensions = size === 'large' ? { width: 914, height: 334 } : { width: 200, height: 165 };
 
   return (
-    <div className={`relative ${dimensions}`}>
-      <img
+    <div
+      className={`relative ${size === 'large' ? 'w-[914px] h-[334px]' : 'w-[200px] h-[165px]'}`}
+    >
+      <Image
         src={images[currentIndex]}
         alt={`Bild ${currentIndex + 1}`}
-        className="w-full h-full object-cover rounded-lg"
+        width={dimensions.width}
+        height={dimensions.height}
+        priority
+        className="w-full h-full object-cover rounded-lg" // Använd object-cover för att bibehålla bildförhållandet
       />
 
       {/* Knapp för att gå till föregående bild */}
@@ -75,7 +82,7 @@ const ImageCarousel = ({ images, size = 'small' }: CarouselProps): JSX.Element =
         </svg>
       </button>
 
-        {/* Indikatorer för vilken bild som visas */}
+      {/* Indikatorer för vilken bild som visas */}
       {/* <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2">
         {images.map((_, index) => (
           <div
@@ -86,7 +93,6 @@ const ImageCarousel = ({ images, size = 'small' }: CarouselProps): JSX.Element =
           />
         ))}
       </div> */}
-    
     </div>
   );
 };
