@@ -52,9 +52,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   return (
-    <form onSubmit={handleSearch} className='flex flex-col smx:flex-row py-[11px] px-[34px] text-[14px] items-center shadow-md rounded-[50px]'>
-      <div className='smx:border-r border-[#E4E4E7] pl-[30px] relative'>
-        <h2 className="">Vart</h2>
+    <form
+      onSubmit={handleSearch}
+      className="flex flex-col border smx:flex-row py-[11px] px-[34px] text-[14px] items-center shadow-md rounded-[50px]"
+    >
+      <div className="pl-[15px] smx:border-r border-[#E4E4E7] pl-[30px] relative min-w-[150px]">
+        <h2>Vart</h2>
         {allApartments && (
           <DestinationSearch
             apartments={allApartments}
@@ -62,15 +65,24 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           />
         )}
       </div>
-      <div className='pt-2 smx:border-r border-[#E4E4E7] px-[25px] relative' ref={datePickerRef}>
+      <div
+        className="pt-2 smx:border-r border-[#E4E4E7] px-[25px] relative min-w-[150px]"
+        ref={datePickerRef}
+      >
         <h2>När</h2>
         <p
-          className="text-gray-400 pt-[10px] bg-transparent cursor-pointer"
+          className="text-gray-400 pt-[10px] bg-transparent cursor-pointer min-w-[120px]"
           onClick={() => setIsDatePickerVisible(!isDatePickerVisible)}
         >
-          {checkInDate && checkOutDate 
-            ? `${new Date(checkInDate).toLocaleDateString("sv-SE", { day: "numeric", month: "short" })} - ${new Date(checkOutDate).toLocaleDateString("sv-SE", { day: "numeric", month: "short" })}` 
-            : 'Lägg till datum'}
+          {checkInDate && checkOutDate
+            ? `${new Date(checkInDate).toLocaleDateString("sv-SE", {
+                day: "numeric",
+                month: "short",
+              })} - ${new Date(checkOutDate).toLocaleDateString("sv-SE", {
+                day: "numeric",
+                month: "short",
+              })}`
+            : "Lägg till datum"}
         </p>
         {isDatePickerVisible && (
           <div className="smx:absolute top-[68px] -left-[155px] bg-white rounded shadow-md z-50">
@@ -78,13 +90,18 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           </div>
         )}
       </div>
-      <div className="pt-2 smx:relative px-[25px]" ref={guestSelectorRef}>
+      <div
+        className="pt-2 smx:relative px-[25px] min-w-[150px]"
+        ref={guestSelectorRef}
+      >
         <h2>Antal</h2>
         <p
-          className="text-gray-400 pt-[10px] bg-transparent cursor-pointer"
+          className="text-gray-400 pt-[10px] bg-transparent cursor-pointer min-w-[120px]"
           onClick={() => setIsGuestSelectorVisible(!isGuestSelectorVisible)}
         >
-          {totalGuests > 0 ? `${totalGuests} gäst${totalGuests > 1 ? 'er' : ''}` : 'Lägg till gäster'}
+          {totalGuests > 0
+            ? `${totalGuests} gäst${totalGuests > 1 ? "er" : ""}`
+            : "Lägg till gäster"}
         </p>
         {isGuestSelectorVisible && (
           <div className="smx:absolute top-[68px] -left-[155px] bg-white rounded shadow-md z-50">
@@ -93,10 +110,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         )}
       </div>
       <div className="mt-2">
-     <SearchButton />
-     </div>
+        <SearchButton />
+      </div>
     </form>
   );
+  
 };
 
 export default SearchBar;

@@ -1,4 +1,4 @@
-// ApartmentCard.tsx
+
 import React, { useState } from 'react';
 import ImageCarousel from './image-carousel';
 import FavoriteButton from './favorites-button';
@@ -23,7 +23,6 @@ type ApartmentCardProps = {
 const ApartmentCard = ({
   apartmentId,
   title,
-  // description,
   bedrooms,
   beds,
   price,

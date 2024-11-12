@@ -56,7 +56,7 @@ const AllApartments: React.FC<AllApartmentsProps> = ({ searchTerm }) => {
 
   return (
     <div className=''>
-      <div className='mt-20 mx-36'>
+      <div className=' mt-20 items-center text-center smx:flex mx-36 justify-start'>
         <p className="mb-10 font-semibold text-[16px]">
           {filteredApartments.length} {filteredApartments.length === 1 ? 'boende' : 'boenden'} 
           {matchingCities.length > 0 && (

@@ -1,4 +1,3 @@
-// DestinationSearch.tsx
 import React, { useState } from 'react';
 import { ApartmentData } from '@/types/types';
 
@@ -17,6 +16,13 @@ const DestinationSearch: React.FC<DestinationSearchProps> = ({ apartments, onSel
     apartment.city.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Skapa en lista över unika länder som matchar sökordet
+  const uniqueCountries = Array.from(new Set(
+    apartments
+      .filter(apartment => apartment.country.toLowerCase().includes(searchTerm.toLowerCase()))
+      .map(apartment => apartment.country)
+  ));
+
   // Hantera ändring av sökterm
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -24,10 +30,18 @@ const DestinationSearch: React.FC<DestinationSearchProps> = ({ apartments, onSel
   };
 
   // När ett förslag klickas
-  const handleSelect = (destination: string) => {
+  const handleSelect = (destination: string, isCountry: boolean = false) => {
     setSearchTerm(destination); // Uppdatera söktermen i fältet
     onSelect(destination); // Skicka valt värde uppåt till SearchBar
     setShowSuggestions(false); // Stäng förslagslistan
+
+    if (isCountry) {
+      // Visa alla lägenheter i landet
+      const apartmentsInCountry = apartments.filter(
+        apartment => apartment.country.toLowerCase() === destination.toLowerCase()
+      );
+      console.log("Lägenheter i landet:", apartmentsInCountry);
+    }
   };
 
   return (
@@ -41,10 +55,19 @@ const DestinationSearch: React.FC<DestinationSearchProps> = ({ apartments, onSel
       />
       {showSuggestions && (
         <ul className="absolute top-full left-0 right-0 bg-white border rounded shadow-lg z-10">
+          {uniqueCountries.map((country, index) => (
+            <li
+              key={`country-${index}`}
+              onClick={() => handleSelect(country, true)} // Välj land
+              className="px-4 py-2 cursor-pointer hover:bg-gray-100 font-semibold"
+            >
+              {country}
+            </li>
+          ))}
           {filteredSuggestions.length > 0 ? (
             filteredSuggestions.map((apartment, index) => (
               <li
-                key={index}
+                key={`city-${index}`}
                 onClick={() => handleSelect(apartment.city)} // Välj stad för enkelhet
                 className="px-4 py-2 cursor-pointer hover:bg-gray-100"
               >

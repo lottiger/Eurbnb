@@ -27,7 +27,7 @@ const FavoriteList = (): JSX.Element => {
   const { favoritedApartments, toggleFavorite } = useFavorites();
 
   if (!isSignedIn) {
-    return <div>Logga in för att se dina favoriter</div>;
+    return <div className='text-center'>Logga in för att se dina favoriter.</div>;
   }
 
   if (!favoriteApartments) {
@@ -37,7 +37,7 @@ const FavoriteList = (): JSX.Element => {
   }
 
   if (favoriteApartments.length === 0) {
-    return <div>Du har inga favoritmarkerade lägenheter än.</div>;
+    return <div className='text-center'>Du har inga favoritmarkerade lägenheter än.</div>;
   }
 
   return (
