@@ -58,7 +58,7 @@ const ApartmentDetails = (): JSX.Element => {
     <>
       <HeaderWithoutSearch />
       <div className="mt-10 px-4 md:px-10 lg:px-20 max-w-screen-xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-6 mx-20">
           <h2 className="text-2xl md:text-3xl font-semibold mb-4 md:mb-0">{apartment.title}</h2>
           <div className="flex items-center gap-1">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -67,8 +67,8 @@ const ApartmentDetails = (): JSX.Element => {
             <p className='text-lg md:text-xl font-semibold'>{apartment.rating}</p>
           </div>
         </div>
-        <div className="mb-6">
-          <ImageCarousel images={apartment.images} size="large" />
+        <div className="mb-6 flex justify-center">
+          <ImageCarousel images={apartment.images} size="large"/>
         </div>
         <div className="flex flex-col lg:flex-row gap-8 items-center lg:items-start justify-center lg:justify-between">
           <div className="w-full lg:w-2/3">
