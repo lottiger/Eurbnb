@@ -6,6 +6,7 @@ import { useDateContext } from '@/context/date-context';
 import DatePicker from '@/app/(root)/_components/date-picker';
 import GuestSelector from '@/app/(root)/_components/guest-selector';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 interface BookingCardProps {
   pricePerNight: number;
@@ -53,6 +54,19 @@ const BookingCard: React.FC<BookingCardProps> = ({ pricePerNight, title, beds, b
 
   const handleReservation = (event: React.FormEvent) => {
     event.preventDefault();
+
+  
+      // Kontrollera om datum har valts
+      if (!checkInDate || !checkOutDate) {
+        toast.error('Välj ett in- och utcheckningsdatum'); // Visa toast om datum saknas
+        return; // Avbryt om datum saknas
+      }
+    
+      // Kontrollera om antal gäster har valts
+      if (totalGuests === 0) {
+        toast.error('Välj antal gäster'); // Visa toast om antal saknas
+        return; // Avbryt om antal saknas
+      }
 
     router.push(`/details/${id}/summary?checkInDate=${checkInDate}&checkOutDate=${checkOutDate}&totalGuests=${totalGuests}&pricePerNight=${pricePerNight}&totalPrice=${totalPrice}&title=${title}&beds=${beds}&bedrooms=${bedrooms}&nights=${nights}&imageUrl=${encodeURIComponent(imageUrl)}`);
   };
