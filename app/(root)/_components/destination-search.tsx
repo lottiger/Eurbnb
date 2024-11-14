@@ -64,7 +64,7 @@ const DestinationSearch: React.FC<DestinationSearchProps> = ({ apartments, onSel
         placeholder="Sök destination "
         value={searchTerm}
         onChange={handleChange}
-        className="text-gray-500 pt-[10px] bg-transparent focus:outline-none w-32"
+        className="text-gray-600 pt-[10px] bg-transparent placeholder-gray-600 focus:outline-none w-32"
       />
       {showSuggestions && (
         <ul className="absolute top-full left-0 right-0 bg-white border rounded shadow-lg z-10">
@@ -88,7 +88,7 @@ const DestinationSearch: React.FC<DestinationSearchProps> = ({ apartments, onSel
               </li>
             ))
           ) : (
-            <li className="px-4 py-2 text-gray-500">Ingen match</li>
+            <li className="px-4 py-2 text-gray-600">Ingen match</li>
           )}
         </ul>
       )}

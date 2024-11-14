@@ -71,7 +71,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       >
         <h2>När</h2>
         <p
-          className="text-gray-400 pt-[10px] bg-transparent cursor-pointer min-w-[120px]"
+          className="text-gray-600 pt-[10px] bg-transparent cursor-pointer min-w-[120px]"
           onClick={() => setIsDatePickerVisible(!isDatePickerVisible)}
         >
           {checkInDate && checkOutDate
@@ -96,7 +96,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       >
         <h2>Antal</h2>
         <p
-          className="text-gray-400 pt-[10px] bg-transparent cursor-pointer min-w-[120px]"
+          className="text-gray-600 pt-[10px] bg-transparent cursor-pointer min-w-[120px]"
           onClick={() => setIsGuestSelectorVisible(!isGuestSelectorVisible)}
         >
           {totalGuests > 0

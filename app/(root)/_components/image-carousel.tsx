@@ -41,6 +41,8 @@ const ImageCarousel = ({ images, size = 'small' }: CarouselProps): JSX.Element =
       <button
         onClick={prevImage}
         className="absolute top-1/2 left-2 transform -translate-y-1/2"
+         aria-label="Föregående bild"
+        
       >
         <svg
           width="20"
@@ -64,6 +66,7 @@ const ImageCarousel = ({ images, size = 'small' }: CarouselProps): JSX.Element =
       <button
         onClick={nextImage}
         className="absolute top-1/2 right-2 transform -translate-y-1/2"
+         aria-label="Nästa bild"
       >
         <svg
           width="20"

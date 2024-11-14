@@ -45,9 +45,13 @@ const DropdownMenu = (): JSX.Element => {
       <Toaster position="top-center" reverseOrder={false} />
       <button
         onClick={toggleDropdown}
-        className="inline-flex justify-center w-full rounded-md border-none focus:outline-none"
+        className="inline-flex justify-center w-full rounded-md border-none focus:outline-none focus:ring-2 focus:ring-gray-700"
+        aria-haspopup="true"
+        aria-expanded={isOpen ? "true" : "false"}
+        aria-controls="dropdown-menu"
       >
-        <Menu size={48} strokeWidth={1} />
+        <Menu size={48} strokeWidth={1} aria-hidden="true" />
+        <span className="sr-only">Open menu</span>
       </button>
 
       {isOpen && (

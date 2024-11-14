@@ -10,6 +10,7 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ isFavorited, onToggle }
     <button
       onClick={onToggle}
       className="absolute top-2 right-2 focus:outline-none"
+      aria-label="Favoritknapp"
     >
       <svg
         width="24"
