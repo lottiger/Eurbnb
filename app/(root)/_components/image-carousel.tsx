@@ -33,7 +33,6 @@ const ImageCarousel = ({ images, size = 'small' }: CarouselProps): JSX.Element =
         alt={`Bild ${currentIndex + 1}`}
         width={dimensions.width}
         height={dimensions.height}
-        priority
         className="w-full h-full object-cover rounded-lg" // Använd object-cover för att bibehålla bildförhållandet
       />
 
