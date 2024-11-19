@@ -25,22 +25,20 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const guestSelectorRef = useRef<HTMLDivElement>(null);
   const datePickerRef = useRef<HTMLDivElement>(null);
 
-  // Stänger selektorer om man klickar utanför
+  // Hantera klick utanför komponenter
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
       if (
-        guestSelectorRef.current && !guestSelectorRef.current.contains(target) &&
-        datePickerRef.current && !datePickerRef.current.contains(target)
+        datePickerRef.current && !datePickerRef.current.contains(target) &&
+        guestSelectorRef.current && !guestSelectorRef.current.contains(target)
       ) {
         setIsGuestSelectorVisible(false);
         setIsDatePickerVisible(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleSearch = (event: React.FormEvent) => {
@@ -51,10 +49,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     onSearch(destination, dates, totalGuests);
   };
 
-  // Funktion för att hantera tangenttryckning (Enter eller Space) för att öppna datum- eller gästväljaren
   const handleKeyDown = (event: React.KeyboardEvent, toggleFunction: () => void) => {
     if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault(); // Förhindra att sidan scrollar när man trycker på Space
+      event.preventDefault();
       toggleFunction();
     }
   };
@@ -64,6 +61,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       onSubmit={handleSearch}
       className="flex flex-col border smx:flex-row py-[11px] px-[34px] text-[14px] items-center shadow-md rounded-[50px]"
     >
+      {/* Destination */}
       <div className="px-[25px] smx:border-r border-[#E4E4E7] relative min-w-[150px]">
         <h2>Vart</h2>
         {allApartments && (
@@ -74,51 +72,43 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         )}
       </div>
 
+      {/* Date Picker */}
       <div className="pt-2 smx:border-r border-[#E4E4E7] px-[25px] relative min-w-[150px]">
         <h2>När</h2>
-        <p
-          className="text-gray-600 pt-[10px] bg-transparent cursor-pointer min-w-[120px] focus:outline-none focus:underline focus:underline-gray-600"
+        <div
+          className="text-gray-600 pt-[10px] cursor-pointer min-w-[120px] focus:outline-none"
           tabIndex={0}
           role="button"
           aria-label="Välj datum"
           onClick={() => setIsDatePickerVisible(!isDatePickerVisible)}
           onKeyDown={(event) => handleKeyDown(event, () => setIsDatePickerVisible(!isDatePickerVisible))}
-          ref={datePickerRef}
         >
           {checkInDate && checkOutDate
-            ? `${new Date(checkInDate).toLocaleDateString("sv-SE", {
-                day: "numeric",
-                month: "short",
-              })} - ${new Date(checkOutDate).toLocaleDateString("sv-SE", {
-                day: "numeric",
-                month: "short",
-              })}`
+            ? `${new Date(checkInDate).toLocaleDateString("sv-SE", { day: "numeric", month: "short" })} - ${new Date(checkOutDate).toLocaleDateString("sv-SE", { day: "numeric", month: "short" })}`
             : "Lägg till datum"}
-        </p>
+        </div>
         {isDatePickerVisible && (
-          <div className="smx:absolute top-[68px] -left-[155px] bg-white rounded shadow-md z-50">
+          <div ref={datePickerRef} className="absolute z-50 bg-white rounded shadow-md mt-2">
             <DatePicker />
           </div>
         )}
       </div>
 
+      {/* Guest Selector */}
       <div className="pt-2 smx:relative px-[25px] min-w-[150px]">
         <h2>Antal</h2>
-        <p
-          className="text-gray-600 pt-[10px] bg-transparent cursor-pointer min-w-[120px] focus:outline-none focus:underline focus:underline-gray-600"
+        <div
+          className="text-gray-600 pt-[10px] cursor-pointer min-w-[120px] focus:outline-none"
           tabIndex={0}
           role="button"
           aria-label="Välj antal gäster"
           onClick={() => setIsGuestSelectorVisible(!isGuestSelectorVisible)}
           onKeyDown={(event) => handleKeyDown(event, () => setIsGuestSelectorVisible(!isGuestSelectorVisible))}
-          ref={guestSelectorRef}
         >
-          {totalGuests > 0
-            ? `${totalGuests} gäst${totalGuests > 1 ? "er" : ""}`
-            : "Lägg till gäster"}
-        </p>
+          {totalGuests > 0 ? `${totalGuests} gäster` : "Lägg till gäster"}
+        </div>
         {isGuestSelectorVisible && (
-          <div className="smx:absolute top-[68px] -left-[155px] bg-white rounded shadow-md z-50">
+          <div ref={guestSelectorRef} className="absolute z-50 bg-white rounded shadow-md mt-2">
             <GuestSelector onClose={() => setIsGuestSelectorVisible(false)} />
           </div>
         )}
