@@ -25,15 +25,20 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const guestSelectorRef = useRef<HTMLDivElement>(null);
   const datePickerRef = useRef<HTMLDivElement>(null);
 
-  // Hantera klick utanför komponenter
+  // Stänger dropdowns när man klickar utanför
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
       if (
-        datePickerRef.current && !datePickerRef.current.contains(target) &&
-        guestSelectorRef.current && !guestSelectorRef.current.contains(target)
+        guestSelectorRef.current &&
+        !guestSelectorRef.current.contains(target)
       ) {
         setIsGuestSelectorVisible(false);
+      }
+      if (
+        datePickerRef.current &&
+        !datePickerRef.current.contains(target)
+      ) {
         setIsDatePickerVisible(false);
       }
     };
