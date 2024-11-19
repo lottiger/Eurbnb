@@ -81,7 +81,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       <div className="pt-2 smx:border-r border-[#E4E4E7] px-[25px] relative min-w-[150px]">
         <h2>När</h2>
         <div
-          className="text-gray-600 pt-[10px] cursor-pointer min-w-[120px] focus:outline-none"
+          className="text-gray-600 pt-[10px] cursor-pointer min-w-[120px] focus:outline rounded"
           tabIndex={0}
           role="button"
           aria-label="Välj datum"
@@ -103,7 +103,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       <div className="pt-2 smx:relative px-[25px] min-w-[150px]">
         <h2>Antal</h2>
         <div
-          className="text-gray-600 pt-[10px] cursor-pointer min-w-[120px] focus:outline-none"
+          className="text-gray-600 pt-[10px] cursor-pointer min-w-[120px] focus:outline rounded"
           tabIndex={0}
           role="button"
           aria-label="Välj antal gäster"
